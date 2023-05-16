@@ -51,8 +51,8 @@ function isValid(row, col) {
 function countBombs(row, col, matrix) {
   const newMatrix = [...matrix];
   let counter = 0;
-  for (let i = -1; i < 2; i += 1) {
-    for (let j = -1; j < 2; j += 1) {
+  for (let i = -1; i <= 1; i += 1) {
+    for (let j = -1; j <= 1; j += 1) {
       const index = getIndex(row + i, col + j);
       if (isValid(row + i, col + j) && newMatrix[index].inner === 'bomb') {
         counter += 1;
@@ -84,19 +84,22 @@ function openCell(button, buttonsArray, matrix) {
 
   const cell = matrix[index];
 
-  if (!isValid(row, col) || cell.status === 'opened') return;
+  if (cell.status === 'opened') return;
 
   cell.status = 'opened';
-  if (cell.inner === 'bomb') {
-    button.innerHTML = 'X';
-  } else if (cell.inner === 0) {
-    button.innerHTML = '';
-    for (let i = -1; i < 2; i += 1) {
-      for (let j = -1; j < 2; j += 1) {
-        const nextButton = buttonsArray[getIndex(row + i, col + j)];
-        openCell(nextButton, buttonsArray, matrix);
+  if (cell.inner === 0) {
+    button.innerHTML = '0';
+    button.classList.add('cell_active');
+    for (let i = -1; i <= 1; i += 1) {
+      for (let j = -1; j <= 1; j += 1) {
+        if (isValid(row + i, col + j)) {
+          const nextButton = buttonsArray[getIndex(row + i, col + j)];
+          openCell(nextButton, buttonsArray, matrix);
+        }
       }
     }
+  } else if (cell.inner === 'bomb') {
+    button.innerHTML = 'X';
   } else {
     button.innerHTML = matrix[index].inner;
   }
@@ -108,8 +111,7 @@ matrix = addBombs(matrix, BOMBS_AMOUNT);
 matrix = addInners(matrix);
 console.log(matrix);
 
-const buttons = field.querySelectorAll('.cell');
-const buttonsArray = Array.from(buttons);
+const buttonsArray = Array.from(field.querySelectorAll('.cell'));
 
 field.addEventListener('click', (event) => {
   const button = event.target.closest('.cell');
