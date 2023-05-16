@@ -1,0 +1,4 @@
+.field {
+  display: grid;
+  grid-template-columns: repeat($field-width, $cell-size);
+}

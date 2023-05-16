@@ -1,0 +1,17 @@
+.cell {
+  display: block;
+  width: $cell-size;
+  height: $cell-size;
+
+  border: 1px solid black;
+
+  cursor: pointer;
+
+  &_active {
+    background-color: red;
+  }
+
+  &_opened {
+    
+  }
+}
