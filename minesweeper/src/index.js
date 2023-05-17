@@ -1,124 +1,171 @@
 import './sass/main.scss';
 
+import { createField, createContainer } from './modules/editHTML';
+
 const WIDTH = 10;
 const HEIGHT = 10;
-const BOMBS_AMOUNT = 5;
+const BOMBS_AMOUNT = 20;
 
-function createField(width, height) {
-  const field = document.querySelector('.field');
-  const button = document.createElement('button');
-  button.classList.add('cell');
+function minesweeperStart(fieldWidth, fieldHeight, fieldBombsAmount) {
+  function createMatrix(width, height) {
+    const matrix = [];
+    for (let i = 0; i < height; i += 1) {
+      for (let j = 0; j < width; j += 1) {
+        const cell = {
+          row: i,
+          col: j,
+        };
 
-  field.innerHTML = button.outerHTML.repeat(width * height);
-
-  return field;
-}
-
-function createMatrix(width, height) {
-  const matrix = [];
-  for (let i = 0; i < height; i += 1) {
-    for (let j = 0; j < width; j += 1) {
-      const cell = {
-        row: i,
-        col: j,
-      };
-
-      matrix.push(cell);
-    }
-  }
-  return matrix;
-}
-
-function getIndex(row, col) {
-  return row * WIDTH + col;
-}
-const getRow = (index) => Math.floor(index / WIDTH);
-const getCol = (index) => index % WIDTH;
-
-function addBombs(matrix, bombsAmount) {
-  const minedMatrix = [...matrix];
-  const minedCells = [...matrix].sort(() => Math.random() - 0.5).slice(0, bombsAmount);
-  minedCells.forEach((cell) => {
-    minedMatrix[getIndex(cell.row, cell.col)].inner = 'bomb';
-  });
-  return minedMatrix;
-}
-
-function isValid(row, col) {
-  return row >= 0 && row < HEIGHT && col >= 0 && col < WIDTH;
-}
-
-function countBombs(row, col, matrix) {
-  const newMatrix = [...matrix];
-  let counter = 0;
-  for (let i = -1; i <= 1; i += 1) {
-    for (let j = -1; j <= 1; j += 1) {
-      const index = getIndex(row + i, col + j);
-      if (isValid(row + i, col + j) && newMatrix[index].inner === 'bomb') {
-        counter += 1;
+        matrix.push(cell);
       }
     }
+    return matrix;
   }
-  return counter;
-}
 
-function addInners(matrix) {
-  const newMatrix = [...matrix];
-  newMatrix.forEach((cell, index) => {
+  function getIndex(row, col) {
+    return row * fieldWidth + col;
+  }
+  const getRow = (index) => Math.floor(index / fieldWidth);
+  const getCol = (index) => index % fieldWidth;
+
+  function isValid(row, col) {
+    return row >= 0 && row < fieldHeight && col >= 0 && col < fieldWidth;
+  }
+
+  function getSurrCells(index, matrix) {
+    const surrCells = [];
+
     const row = getRow(index);
     const col = getCol(index);
 
-    if (cell.inner !== 'bomb') {
-      // const newCell = { ...cell };
-      cell.inner = countBombs(row, col, matrix);
-      // newMatrix[index] = newCell;
-    }
-  });
-  return newMatrix;
-}
-
-function openCell(button, buttonsArray, matrix) {
-  const index = buttonsArray.indexOf(button);
-  const row = getRow(index);
-  const col = getCol(index);
-
-  const cell = matrix[index];
-
-  if (cell.status === 'opened') return;
-
-  cell.status = 'opened';
-  if (cell.inner === 0) {
-    button.innerHTML = '0';
-    button.classList.add('cell_active');
     for (let i = -1; i <= 1; i += 1) {
       for (let j = -1; j <= 1; j += 1) {
         if (isValid(row + i, col + j)) {
-          const nextButton = buttonsArray[getIndex(row + i, col + j)];
-          openCell(nextButton, buttonsArray, matrix);
+          surrCells.push(matrix[getIndex(row + i, col + j)]);
         }
       }
     }
-  } else if (cell.inner === 'bomb') {
-    button.innerHTML = 'X';
-  } else {
-    button.innerHTML = matrix[index].inner;
+
+    return surrCells;
   }
+
+  function addBombs(matrix, bombsAmount, unmined) {
+    const newMatrix = [...matrix];
+
+    const index = buttonsArray.indexOf(unmined);
+    const unminedCells = getSurrCells(index, matrix);
+
+    let minedCells = [...matrix].filter((cell) => !unminedCells.includes(cell));
+    minedCells = minedCells.sort(() => Math.random() - 0.5).slice(0, bombsAmount);
+    minedCells.forEach((cell) => {
+      newMatrix[getIndex(cell.row, cell.col)].inner = 'bomb';
+    });
+    return newMatrix;
+  }
+
+  function countBombs(row, col, matrix) {
+    const newMatrix = [...matrix];
+    let counter = 0;
+    for (let i = -1; i <= 1; i += 1) {
+      for (let j = -1; j <= 1; j += 1) {
+        const index = getIndex(row + i, col + j);
+        if (isValid(row + i, col + j) && newMatrix[index].inner === 'bomb') {
+          counter += 1;
+        }
+      }
+    }
+    return counter;
+  }
+
+  function addInners(matrix) {
+    const newMatrix = [...matrix];
+    newMatrix.forEach((cell, index) => {
+      const row = getRow(index);
+      const col = getCol(index);
+
+      if (cell.inner !== 'bomb') {
+        // const newCell = { ...cell };
+        cell.inner = countBombs(row, col, matrix);
+        // newMatrix[index] = newCell;
+      }
+    });
+    return newMatrix;
+  }
+
+  function openCell(button, buttonsArray, matrix) {
+    const index = buttonsArray.indexOf(button);
+    const row = getRow(index);
+    const col = getCol(index);
+
+    const cell = matrix[index];
+
+    if (cell.status === 'opened') return;
+
+    cell.status = 'opened';
+    button.classList.add('cell_opened');
+    if (cell.inner === 0) {
+      button.innerHTML = '';
+      // const surrCells = getSurrCells(index, matrix);
+      // console.log(surrCells);
+      for (let i = -1; i <= 1; i += 1) {
+        for (let j = -1; j <= 1; j += 1) {
+          if (isValid(row + i, col + j)) {
+            const nextButton = buttonsArray[getIndex(row + i, col + j)];
+            openCell(nextButton, buttonsArray, matrix);
+          }
+        }
+      }
+    } else if (cell.inner === 'bomb') {
+      button.innerHTML = 'X';
+      const boomEvent = new Event('boom', { bubbles: true });
+      button.dispatchEvent(boomEvent);
+    } else {
+      button.innerHTML = matrix[index].inner;
+    }
+  }
+
+  const container = createContainer(document.body);
+  const field = createField(container, fieldWidth, fieldHeight);
+  const buttonsArray = Array.from(field.querySelectorAll('.cell'));
+
+  let matrix = [];
+  function addMatrix(event) {
+    const button = event.target.closest('.cell');
+    if (!button) return;
+
+    matrix = createMatrix(fieldWidth, fieldHeight);
+    matrix = addBombs(matrix, fieldBombsAmount, button);
+    matrix = addInners(matrix);
+    console.log(matrix);
+
+    field.removeEventListener('click', addMatrix);
+  }
+
+  field.addEventListener('click', addMatrix);
+
+  field.addEventListener('click', (event) => {
+    const button = event.target.closest('.cell');
+
+    if (!button) return;
+
+    openCell(button, buttonsArray, matrix);
+
+    const openedButtons = field.querySelectorAll('.cell_opened');
+    if (openedButtons.length + fieldBombsAmount === fieldWidth * fieldHeight) {
+      const winEvent = new Event('win', { bubbles: true });
+      button.dispatchEvent(winEvent);
+    }
+  });
+
+  document.addEventListener('boom', (event) => {
+    console.log(event);
+    alert('loose');
+  });
+
+  document.addEventListener('win', (event) => {
+    console.log(event);
+    alert('win');
+  });
 }
 
-const field = createField(WIDTH, HEIGHT);
-let matrix = createMatrix(WIDTH, HEIGHT);
-matrix = addBombs(matrix, BOMBS_AMOUNT);
-matrix = addInners(matrix);
-console.log(matrix);
-
-const buttonsArray = Array.from(field.querySelectorAll('.cell'));
-
-field.addEventListener('click', (event) => {
-  const button = event.target.closest('.cell');
-
-  if (!button) return;
-
-  // const buttonIndex = buttonsArray.indexOf(button);
-  openCell(button, buttonsArray, matrix);
-  // button.innerHTML = matrix[buttonsArray.indexOf(button)].inner;
-});
+minesweeperStart(WIDTH, HEIGHT, BOMBS_AMOUNT);
