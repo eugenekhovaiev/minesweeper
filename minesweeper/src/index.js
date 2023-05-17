@@ -4,24 +4,9 @@ import { createField, createContainer } from './modules/editHTML';
 
 const WIDTH = 10;
 const HEIGHT = 10;
-const BOMBS_AMOUNT = 20;
+const BOMBS_AMOUNT = 10;
 
 function minesweeperStart(fieldWidth, fieldHeight, fieldBombsAmount) {
-  function createMatrix(width, height) {
-    const matrix = [];
-    for (let i = 0; i < height; i += 1) {
-      for (let j = 0; j < width; j += 1) {
-        const cell = {
-          row: i,
-          col: j,
-        };
-
-        matrix.push(cell);
-      }
-    }
-    return matrix;
-  }
-
   function getIndex(row, col) {
     return row * fieldWidth + col;
   }
@@ -49,79 +34,90 @@ function minesweeperStart(fieldWidth, fieldHeight, fieldBombsAmount) {
     return surrCells;
   }
 
-  function addBombs(matrix, bombsAmount, unmined) {
+  function findButtonIndex(matrix, button) {
+    return matrix.findIndex((cell) => cell.button === button);
+  }
+
+  function createMatrix(width, height, buttonsArray) {
+    const matrix = [];
+    for (let i = 0; i < height; i += 1) {
+      for (let j = 0; j < width; j += 1) {
+        const cell = {
+          row: i,
+          col: j,
+          button: buttonsArray[getIndex(i, j)],
+        };
+
+        matrix.push(cell);
+      }
+    }
+    return matrix;
+  }
+
+  function addBombs(matrix, bombsAmount, saveButton) {
     const newMatrix = [...matrix];
 
-    const index = buttonsArray.indexOf(unmined);
-    const unminedCells = getSurrCells(index, matrix);
+    const saveButtonIndex = findButtonIndex(newMatrix, saveButton);
+    const unminedCells = getSurrCells(saveButtonIndex, matrix);
 
     let minedCells = [...matrix].filter((cell) => !unminedCells.includes(cell));
     minedCells = minedCells.sort(() => Math.random() - 0.5).slice(0, bombsAmount);
+
     minedCells.forEach((cell) => {
-      newMatrix[getIndex(cell.row, cell.col)].inner = 'bomb';
+      const minedButtonIndex = findButtonIndex(matrix, cell.button);
+      newMatrix[minedButtonIndex].inner = 'bomb';
     });
     return newMatrix;
   }
 
-  function countBombs(row, col, matrix) {
-    const newMatrix = [...matrix];
-    let counter = 0;
-    for (let i = -1; i <= 1; i += 1) {
-      for (let j = -1; j <= 1; j += 1) {
-        const index = getIndex(row + i, col + j);
-        if (isValid(row + i, col + j) && newMatrix[index].inner === 'bomb') {
-          counter += 1;
-        }
-      }
-    }
-    return counter;
+  function countBombs(index, matrix) {
+    const bombCells = getSurrCells(index, matrix).filter((cell) => cell.inner === 'bomb');
+    return bombCells.length;
   }
 
   function addInners(matrix) {
     const newMatrix = [...matrix];
     newMatrix.forEach((cell, index) => {
-      const row = getRow(index);
-      const col = getCol(index);
-
       if (cell.inner !== 'bomb') {
         // const newCell = { ...cell };
-        cell.inner = countBombs(row, col, matrix);
+        cell.inner = countBombs(index, matrix);
         // newMatrix[index] = newCell;
       }
     });
     return newMatrix;
   }
 
-  function openCell(button, buttonsArray, matrix) {
-    const index = buttonsArray.indexOf(button);
-    const row = getRow(index);
-    const col = getCol(index);
+  function openCell(button, matrix) {
+    const buttonIndex = findButtonIndex(matrix, button);
+    const buttonCell = matrix[buttonIndex];
 
-    const cell = matrix[index];
+    if (buttonCell.status === 'opened') return;
 
-    if (cell.status === 'opened') return;
-
-    cell.status = 'opened';
+    buttonCell.status = 'opened';
     button.classList.add('cell_opened');
-    if (cell.inner === 0) {
+
+    if (buttonCell.inner === 0) {
       button.innerHTML = '';
-      // const surrCells = getSurrCells(index, matrix);
-      // console.log(surrCells);
-      for (let i = -1; i <= 1; i += 1) {
-        for (let j = -1; j <= 1; j += 1) {
-          if (isValid(row + i, col + j)) {
-            const nextButton = buttonsArray[getIndex(row + i, col + j)];
-            openCell(nextButton, buttonsArray, matrix);
-          }
-        }
-      }
-    } else if (cell.inner === 'bomb') {
+
+      const surrCells = getSurrCells(buttonIndex, matrix);
+      surrCells.forEach((cell) => {
+        openCell(cell.button, matrix);
+      });
+    } else if (buttonCell.inner === 'bomb') {
       button.innerHTML = 'X';
-      const boomEvent = new Event('boom', { bubbles: true });
-      button.dispatchEvent(boomEvent);
+
+      // const boomEvent = new Event('boom', { bubbles: true });
+      // button.dispatchEvent(boomEvent);
     } else {
-      button.innerHTML = matrix[index].inner;
+      button.innerHTML = matrix[buttonIndex].inner;
     }
+  }
+
+  function openAllCells(matrix) {
+    matrix.forEach((cell) => {
+      if (!cell.inner) return;
+      cell.button.innerHTML = cell.inner;
+    });
   }
 
   const container = createContainer(document.body);
@@ -133,9 +129,10 @@ function minesweeperStart(fieldWidth, fieldHeight, fieldBombsAmount) {
     const button = event.target.closest('.cell');
     if (!button) return;
 
-    matrix = createMatrix(fieldWidth, fieldHeight);
+    matrix = createMatrix(fieldWidth, fieldHeight, buttonsArray);
     matrix = addBombs(matrix, fieldBombsAmount, button);
     matrix = addInners(matrix);
+    // openAllCells(matrix);
     console.log(matrix);
 
     field.removeEventListener('click', addMatrix);
@@ -148,13 +145,13 @@ function minesweeperStart(fieldWidth, fieldHeight, fieldBombsAmount) {
 
     if (!button) return;
 
-    openCell(button, buttonsArray, matrix);
+    openCell(button, matrix);
 
-    const openedButtons = field.querySelectorAll('.cell_opened');
-    if (openedButtons.length + fieldBombsAmount === fieldWidth * fieldHeight) {
-      const winEvent = new Event('win', { bubbles: true });
-      button.dispatchEvent(winEvent);
-    }
+    // const openedButtons = field.querySelectorAll('.cell_opened');
+    // if (openedButtons.length + fieldBombsAmount === fieldWidth * fieldHeight) {
+    //   const winEvent = new Event('win', { bubbles: true });
+    //   button.dispatchEvent(winEvent);
+    // }
   });
 
   document.addEventListener('boom', (event) => {
