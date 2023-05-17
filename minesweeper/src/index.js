@@ -4,7 +4,7 @@ import { createField, createContainer } from './modules/editHTML';
 
 const WIDTH = 10;
 const HEIGHT = 10;
-const BOMBS_AMOUNT = 10;
+const BOMBS_AMOUNT = 3;
 
 function minesweeperStart(fieldWidth, fieldHeight, fieldBombsAmount) {
   function getIndex(row, col) {
@@ -54,11 +54,11 @@ function minesweeperStart(fieldWidth, fieldHeight, fieldBombsAmount) {
     return matrix;
   }
 
-  function addBombs(matrix, bombsAmount, saveButton) {
+  function addBombs(matrix, bombsAmount, safeButton) {
     const newMatrix = [...matrix];
 
-    const saveButtonIndex = findButtonIndex(newMatrix, saveButton);
-    const unminedCells = getSurrCells(saveButtonIndex, matrix);
+    const safeButtonIndex = findButtonIndex(newMatrix, safeButton);
+    const unminedCells = getSurrCells(safeButtonIndex, matrix);
 
     let minedCells = [...matrix].filter((cell) => !unminedCells.includes(cell));
     minedCells = minedCells.sort(() => Math.random() - 0.5).slice(0, bombsAmount);
@@ -79,9 +79,7 @@ function minesweeperStart(fieldWidth, fieldHeight, fieldBombsAmount) {
     const newMatrix = [...matrix];
     newMatrix.forEach((cell, index) => {
       if (cell.inner !== 'bomb') {
-        // const newCell = { ...cell };
         cell.inner = countBombs(index, matrix);
-        // newMatrix[index] = newCell;
       }
     });
     return newMatrix;
@@ -91,7 +89,7 @@ function minesweeperStart(fieldWidth, fieldHeight, fieldBombsAmount) {
     const buttonIndex = findButtonIndex(matrix, button);
     const buttonCell = matrix[buttonIndex];
 
-    if (buttonCell.status === 'opened') return;
+    if (buttonCell.status === 'opened') return true;
 
     buttonCell.status = 'opened';
     button.classList.add('cell_opened');
@@ -103,14 +101,16 @@ function minesweeperStart(fieldWidth, fieldHeight, fieldBombsAmount) {
       surrCells.forEach((cell) => {
         openCell(cell.button, matrix);
       });
-    } else if (buttonCell.inner === 'bomb') {
-      button.innerHTML = 'X';
-
-      // const boomEvent = new Event('boom', { bubbles: true });
-      // button.dispatchEvent(boomEvent);
-    } else {
-      button.innerHTML = matrix[buttonIndex].inner;
+      return true;
     }
+
+    if (buttonCell.inner === 'bomb') {
+      button.innerHTML = 'X';
+      return false;
+    }
+
+    button.innerHTML = matrix[buttonIndex].inner;
+    return true;
   }
 
   function openAllCells(matrix) {
@@ -120,12 +120,23 @@ function minesweeperStart(fieldWidth, fieldHeight, fieldBombsAmount) {
     });
   }
 
+  function winFunc(event) {
+    console.log(event);
+    console.log('win');
+  }
+
+  function lossFunc(event) {
+    console.log(event);
+    console.log('loss');
+  }
+
   const container = createContainer(document.body);
   const field = createField(container, fieldWidth, fieldHeight);
   const buttonsArray = Array.from(field.querySelectorAll('.cell'));
 
   let matrix = [];
-  function addMatrix(event) {
+
+  field.addEventListener('click', (event) => {
     const button = event.target.closest('.cell');
     if (!button) return;
 
@@ -134,35 +145,31 @@ function minesweeperStart(fieldWidth, fieldHeight, fieldBombsAmount) {
     matrix = addInners(matrix);
     // openAllCells(matrix);
     console.log(matrix);
-
-    field.removeEventListener('click', addMatrix);
-  }
-
-  field.addEventListener('click', addMatrix);
+  }, { once: true });
 
   field.addEventListener('click', (event) => {
     const button = event.target.closest('.cell');
 
     if (!button) return;
 
-    openCell(button, matrix);
+    const isSafe = openCell(button, matrix);
 
-    // const openedButtons = field.querySelectorAll('.cell_opened');
-    // if (openedButtons.length + fieldBombsAmount === fieldWidth * fieldHeight) {
-    //   const winEvent = new Event('win', { bubbles: true });
-    //   button.dispatchEvent(winEvent);
-    // }
+    if (!isSafe) {
+      const boomEvent = new Event('boom', { bubbles: true });
+      button.dispatchEvent(boomEvent);
+    }
+
+    const openedButtonsAmount = field.querySelectorAll('.cell_opened').length;
+    const buttonsAmount = fieldWidth * fieldHeight;
+    if (openedButtonsAmount + fieldBombsAmount === buttonsAmount && button.innerHTML !== 'X') {
+      const winEvent = new Event('win', { bubbles: true });
+      button.dispatchEvent(winEvent);
+    }
   });
 
-  document.addEventListener('boom', (event) => {
-    console.log(event);
-    alert('loose');
-  });
+  document.addEventListener('boom', lossFunc);
 
-  document.addEventListener('win', (event) => {
-    console.log(event);
-    alert('win');
-  });
+  document.addEventListener('win', winFunc);
 }
 
 minesweeperStart(WIDTH, HEIGHT, BOMBS_AMOUNT);
