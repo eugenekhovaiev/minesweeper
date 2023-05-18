@@ -28,20 +28,19 @@ export default class MinesweeperGame {
     this.field = createField(this.where, fieldWidth, fieldHeight);
     const buttonsArray = Array.from(this.field.querySelectorAll('.cell'));
 
-    this.field.addEventListener('click', (event) => {
-      const button = event.target.closest('.cell');
-      if (!button || this.matrix) return;
-
-      this.matrix = createMatrix(fieldWidth, fieldHeight, buttonsArray, button);
-      // openAllCells(matrix);
-      console.log(this.matrix);
-    });
+    this.loadSave();
 
     this.field.addEventListener('click', (event) => {
       const button = event.target.closest('.cell');
       if (!button) return;
 
+      if (!this.matrix) {
+        this.matrix = createMatrix(fieldWidth, fieldHeight, buttonsArray, button);
+      }
+
       const isSafe = openCell(button, this.matrix);
+
+      this.saveGame();
 
       if (!isSafe) {
         const boomEvent = new Event('boom', { bubbles: true });
@@ -63,6 +62,8 @@ export default class MinesweeperGame {
       if (!button) return;
       // TODO fix disapering flag
       toggleFlag(button, this.matrix);
+
+      this.saveGame();
     });
 
     this.field.addEventListener('dblclick', (event) => {
@@ -70,6 +71,8 @@ export default class MinesweeperGame {
       if (!button) return;
 
       openSurrCells(button, this.matrix);
+
+      this.saveGame();
     });
 
     document.addEventListener('boom', lossFunc);
@@ -81,7 +84,38 @@ export default class MinesweeperGame {
     this.matrix = null;
     this.field.remove();
     this.field = null;
+    this.removeSave();
 
     this.start(fieldWidth, fieldHeight, fieldBombsAmount, this.where);
+  }
+
+  saveGame() {
+    localStorage.setItem('save', JSON.stringify(this.matrix));
+  }
+
+  removeSave() {
+    localStorage.setItem('save', null);
+  }
+
+  loadSave() {
+    const buttonsArray = Array.from(this.field.querySelectorAll('.cell'));
+    const save = JSON.parse(localStorage.getItem('save'));
+
+    if (save) {
+      this.matrix = save.map((cell, index) => {
+        const button = buttonsArray[index];
+        cell.button = button;
+        return cell;
+      });
+
+      this.matrix.forEach((cell) => {
+        if (cell.status === 'opened') {
+          openCell(cell.button, this.matrix);
+        } else if (cell.status === 'flagged') {
+          toggleFlag(cell.button, this.matrix);
+        }
+      });
+      // console.log(this.matrix);
+    }
   }
 }

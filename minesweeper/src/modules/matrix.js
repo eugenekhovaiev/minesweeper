@@ -90,10 +90,11 @@ export function openCell(button, matrix) {
   const buttonIndex = findButtonIndex(button, matrix);
   const buttonCell = matrix[buttonIndex];
 
-  if (buttonCell.status === 'opened' || buttonCell.status === 'flagged') return true;
+  if (button.classList.contains('cell_opened') || button.classList.contains('cell_flagged')) return true;
 
   buttonCell.status = 'opened';
   button.classList.add('cell_opened');
+  // console.log(matrix);
 
   if (buttonCell.inner === 0) {
     button.innerHTML = '';
@@ -124,13 +125,15 @@ export function openAllCells(matrix) {
 export function toggleFlag(button, matrix) {
   const buttonIndex = findButtonIndex(button, matrix);
   const cell = matrix[buttonIndex];
-  if (cell.status === 'opened') return;
+  if (button.classList.contains('cell_opened')) return;
 
-  if (cell.status !== 'flagged') {
+  if (!button.classList.contains('cell_flagged')) {
     cell.status = 'flagged';
+    button.classList.add('cell_flagged');
     button.innerHTML = 'F';
   } else {
     cell.status = null;
+    button.classList.remove('cell_flagged');
     button.innerHTML = '';
   }
 }
@@ -139,8 +142,8 @@ export function openSurrCells(button, matrix) {
   const buttonIndex = findButtonIndex(button, matrix);
   const surrCells = getSurrCells(buttonIndex, matrix);
 
-  const flaggedCellsAmount = surrCells.filter((cell) => cell.status === 'flagged').length;
-  if (flaggedCellsAmount !== matrix[buttonIndex].inner) return;
+  const flaggedCellsAmount = surrCells.filter((cell) => cell.button.classList.contains('cell_flagged')).length;
+  if (flaggedCellsAmount < matrix[buttonIndex].inner) return;
 
   surrCells.forEach((cell) => {
     openCell(cell.button, matrix);
