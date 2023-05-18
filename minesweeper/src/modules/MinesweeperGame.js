@@ -14,15 +14,11 @@ export default class MinesweeperGame {
     this.field = null;
   }
 
-  start(fieldWidth, fieldHeight, fieldBombsAmount) {
-    function winFunc(event) {
-      console.log(event);
-      console.log('win');
-    }
-
-    function lossFunc(event) {
-      console.log(event);
-      console.log('loss');
+  start(fieldWidth, fieldHeight, bombsAmount) {
+    function isWin(matrix) {
+      const openedSafeCells = matrix.filter((cell) => cell.status === 'opened' && cell.inner !== 'bomb');
+      const safeCells = matrix.filter((cell) => cell.inner !== 'bomb');
+      return openedSafeCells.length === safeCells.length;
     }
 
     this.field = createField(this.where, fieldWidth, fieldHeight);
@@ -43,16 +39,11 @@ export default class MinesweeperGame {
       this.saveGame();
 
       if (!isSafe) {
-        const boomEvent = new Event('boom', { bubbles: true });
-        button.dispatchEvent(boomEvent);
+        this.lossFunc();
       }
 
-      const openedButtonsAmount = this.field.querySelectorAll('.cell_opened').length;
-      const buttonsAmount = fieldWidth * fieldHeight;
-      // TODO fix winning codition
-      if (openedButtonsAmount + fieldBombsAmount === buttonsAmount && button.innerHTML !== 'X') {
-        const winEvent = new Event('win', { bubbles: true });
-        button.dispatchEvent(winEvent);
+      if (isWin(this.matrix)) {
+        this.winFunc();
       }
     });
 
@@ -60,6 +51,7 @@ export default class MinesweeperGame {
       event.preventDefault();
       const button = event.target.closest('.cell');
       if (!button) return;
+
       // TODO fix disapering flag
       toggleFlag(button, this.matrix);
 
@@ -70,14 +62,18 @@ export default class MinesweeperGame {
       const button = event.target.closest('.cell');
       if (!button) return;
 
-      openSurrCells(button, this.matrix);
+      const isSafe = openSurrCells(button, this.matrix);
 
       this.saveGame();
+
+      if (!isSafe) {
+        this.lossFunc();
+      }
+
+      if (isWin(this.matrix)) {
+        this.winFunc();
+      }
     });
-
-    document.addEventListener('boom', lossFunc);
-
-    document.addEventListener('win', winFunc);
   }
 
   restart(fieldWidth, fieldHeight, fieldBombsAmount) {
@@ -117,5 +113,15 @@ export default class MinesweeperGame {
       });
       // console.log(this.matrix);
     }
+  }
+
+  winFunc() {
+    alert('win');
+    this.removeSave();
+  }
+
+  lossFunc() {
+    alert('loss');
+    this.removeSave();
   }
 }

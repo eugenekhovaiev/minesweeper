@@ -35,7 +35,7 @@ function findButtonIndex(button, matrix) {
   return matrix.findIndex((cell) => cell.button === button);
 }
 
-export function createMatrix(width, height, buttonsArray, unminedButton) {
+export function createMatrix(width, height, buttonsArray, saveButton) {
   function countBombs(index, matrix) {
     const bombCells = getSurrCells(index, matrix).filter((cell) => cell.inner === 'bomb');
     return bombCells.length;
@@ -45,9 +45,9 @@ export function createMatrix(width, height, buttonsArray, unminedButton) {
     const newMatrix = [...matrix];
 
     const safeButtonIndex = findButtonIndex(safeButton, newMatrix);
-    const unminedCells = getSurrCells(safeButtonIndex, matrix);
+    const saveCells = getSurrCells(safeButtonIndex, matrix);
 
-    let minedCells = [...matrix].filter((cell) => !unminedCells.includes(cell));
+    let minedCells = [...matrix].filter((cell) => !saveCells.includes(cell));
     minedCells = minedCells.sort(() => Math.random() - 0.5).slice(0, bombsAmount);
 
     minedCells.forEach((cell) => {
@@ -80,7 +80,7 @@ export function createMatrix(width, height, buttonsArray, unminedButton) {
     }
   }
 
-  matrix = addBombs(matrix, BOMBS_AMOUNT, unminedButton);
+  matrix = addBombs(matrix, BOMBS_AMOUNT, saveButton);
   matrix = addInners(matrix);
 
   return matrix;
@@ -143,9 +143,12 @@ export function openSurrCells(button, matrix) {
   const surrCells = getSurrCells(buttonIndex, matrix);
 
   const flaggedCellsAmount = surrCells.filter((cell) => cell.button.classList.contains('cell_flagged')).length;
-  if (flaggedCellsAmount < matrix[buttonIndex].inner) return;
+  if (flaggedCellsAmount < matrix[buttonIndex].inner) return true;
 
+  let isSafe = true;
   surrCells.forEach((cell) => {
-    openCell(cell.button, matrix);
+    if (!openCell(cell.button, matrix)) isSafe = false;
   });
+
+  return isSafe;
 }
