@@ -90,7 +90,7 @@ export function openCell(button, matrix) {
   const buttonIndex = findButtonIndex(button, matrix);
   const buttonCell = matrix[buttonIndex];
 
-  if (buttonCell.status === 'opened' || buttonCell.status === 'flag') return true;
+  if (buttonCell.status === 'opened' || buttonCell.status === 'flagged') return true;
 
   buttonCell.status = 'opened';
   button.classList.add('cell_opened');
@@ -126,8 +126,8 @@ export function toggleFlag(button, matrix) {
   const cell = matrix[buttonIndex];
   if (cell.status === 'opened') return;
 
-  if (cell.status !== 'flag') {
-    cell.status = 'flag';
+  if (cell.status !== 'flagged') {
+    cell.status = 'flagged';
     button.innerHTML = 'F';
   } else {
     cell.status = null;
@@ -138,6 +138,10 @@ export function toggleFlag(button, matrix) {
 export function openSurrCells(button, matrix) {
   const buttonIndex = findButtonIndex(button, matrix);
   const surrCells = getSurrCells(buttonIndex, matrix);
+
+  const flaggedCellsAmount = surrCells.filter((cell) => cell.status === 'flagged').length;
+  if (flaggedCellsAmount !== matrix[buttonIndex].inner) return;
+
   surrCells.forEach((cell) => {
     openCell(cell.button, matrix);
   });
