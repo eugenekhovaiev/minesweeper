@@ -6,7 +6,7 @@ export function createField(where, width, height) {
   button.classList.add('cell');
 
   field.innerHTML = button.outerHTML.repeat(width * height);
-  where.insertAdjacentElement('afterbegin', field);
+  where.insertAdjacentElement('beforeend', field);
 
   return field;
 }
@@ -17,4 +17,13 @@ export function createContainer(where) {
   where.insertAdjacentElement('afterbegin', container);
 
   return container;
+}
+
+export function createRestartButton(where) {
+  const restartButton = document.createElement('button');
+  restartButton.classList.add('restart');
+  restartButton.innerHTML = 'Restart';
+  where.insertAdjacentElement('afterbegin', restartButton);
+
+  return restartButton;
 }

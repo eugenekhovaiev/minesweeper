@@ -1,6 +1,11 @@
 import './sass/main.scss';
 
-import { createField, createContainer } from './modules/editHTML';
+import {
+  createField,
+  createContainer,
+  createRestartButton,
+} from './modules/editHTML';
+
 import {
   createMatrix,
   openCell,
@@ -14,70 +19,92 @@ import {
   BOMBS_AMOUNT,
 } from './modules/game-options';
 
-function minesweeperStart(fieldWidth, fieldHeight, fieldBombsAmount) {
-  function winFunc(event) {
-    console.log(event);
-    console.log('win');
+class MinesweeperGame {
+  constructor(where) {
+    this.where = where;
+    this.matrix = null;
+    this.field = null;
   }
 
-  function lossFunc(event) {
-    console.log(event);
-    console.log('loss');
+  start(fieldWidth, fieldHeight, fieldBombsAmount) {
+    function winFunc(event) {
+      console.log(event);
+      console.log('win');
+    }
+
+    function lossFunc(event) {
+      console.log(event);
+      console.log('loss');
+    }
+
+    this.field = createField(this.where, fieldWidth, fieldHeight);
+    const buttonsArray = Array.from(this.field.querySelectorAll('.cell'));
+
+    this.field.addEventListener('click', (event) => {
+      const button = event.target.closest('.cell');
+      if (!button || this.matrix) return;
+
+      this.matrix = createMatrix(fieldWidth, fieldHeight, buttonsArray, button);
+      // openAllCells(matrix);
+      console.log(this.matrix);
+    });
+
+    this.field.addEventListener('click', (event) => {
+      const button = event.target.closest('.cell');
+      if (!button) return;
+
+      const isSafe = openCell(button, this.matrix);
+
+      if (!isSafe) {
+        const boomEvent = new Event('boom', { bubbles: true });
+        button.dispatchEvent(boomEvent);
+      }
+
+      const openedButtonsAmount = this.field.querySelectorAll('.cell_opened').length;
+      const buttonsAmount = fieldWidth * fieldHeight;
+      // TODO fix winning codition
+      if (openedButtonsAmount + fieldBombsAmount === buttonsAmount && button.innerHTML !== 'X') {
+        const winEvent = new Event('win', { bubbles: true });
+        button.dispatchEvent(winEvent);
+      }
+    });
+
+    this.field.addEventListener('contextmenu', (event) => {
+      event.preventDefault();
+      const button = event.target.closest('.cell');
+      if (!button) return;
+      // TODO fix disapering flag
+      toggleFlag(button, this.matrix);
+    });
+
+    this.field.addEventListener('dblclick', (event) => {
+      const button = event.target.closest('.cell');
+      if (!button) return;
+
+      openSurrCells(button, this.matrix);
+    });
+
+    document.addEventListener('boom', lossFunc);
+
+    document.addEventListener('win', winFunc);
   }
 
-  const container = createContainer(document.body);
-  const field = createField(container, fieldWidth, fieldHeight);
-  const buttonsArray = Array.from(field.querySelectorAll('.cell'));
+  restart(fieldWidth, fieldHeight, fieldBombsAmount) {
+    this.matrix = null;
+    this.field.remove();
+    this.field = null;
 
-  let matrix = [];
-
-  field.addEventListener('click', (event) => {
-    const button = event.target.closest('.cell');
-    if (!button) return;
-
-    matrix = createMatrix(fieldWidth, fieldHeight, buttonsArray, button);
-    // openAllCells(matrix);
-    console.log(matrix);
-  }, { once: true });
-
-  field.addEventListener('click', (event) => {
-    const button = event.target.closest('.cell');
-    if (!button) return;
-
-    const isSafe = openCell(button, matrix);
-
-    if (!isSafe) {
-      const boomEvent = new Event('boom', { bubbles: true });
-      button.dispatchEvent(boomEvent);
-    }
-
-    const openedButtonsAmount = field.querySelectorAll('.cell_opened').length;
-    const buttonsAmount = fieldWidth * fieldHeight;
-    // TODO fix winning codition
-    if (openedButtonsAmount + fieldBombsAmount === buttonsAmount && button.innerHTML !== 'X') {
-      const winEvent = new Event('win', { bubbles: true });
-      button.dispatchEvent(winEvent);
-    }
-  });
-
-  field.addEventListener('contextmenu', (event) => {
-    event.preventDefault();
-    const button = event.target.closest('.cell');
-    if (!button) return;
-    // TODO fix disapering flag
-    toggleFlag(button, matrix);
-  });
-
-  field.addEventListener('dblclick', (event) => {
-    const button = event.target.closest('.cell');
-    if (!button) return;
-
-    openSurrCells(button, matrix);
-  });
-
-  document.addEventListener('boom', lossFunc);
-
-  document.addEventListener('win', winFunc);
+    this.start(fieldWidth, fieldHeight, fieldBombsAmount, this.where);
+  }
 }
 
-minesweeperStart(WIDTH, HEIGHT, BOMBS_AMOUNT);
+const container = createContainer(document.body);
+
+const minesweeperGame = new MinesweeperGame(container);
+
+minesweeperGame.start(WIDTH, HEIGHT, BOMBS_AMOUNT);
+
+const restartButton = createRestartButton(container);
+restartButton.addEventListener('click', () => {
+  minesweeperGame.restart(WIDTH, HEIGHT, BOMBS_AMOUNT, container);
+});
