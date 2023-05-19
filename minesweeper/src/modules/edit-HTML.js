@@ -27,3 +27,12 @@ export function createRestartButton(where) {
 
   return restartButton;
 }
+
+export function createBombCounter(where) {
+  const bombCounter = document.createElement('button');
+  bombCounter.classList.add('bomb-counter');
+  // bombCounter.innerHTML = bombsAmount;
+  where.insertAdjacentElement('afterbegin', bombCounter);
+
+  return bombCounter;
+}

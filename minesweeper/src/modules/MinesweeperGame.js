@@ -19,6 +19,7 @@ export default class MinesweeperGame {
     function isWin(matrix) {
       const openedSafeCells = matrix.filter((cell) => cell.status === 'opened' && cell.inner !== 'bomb');
       const safeCells = matrix.filter((cell) => cell.inner !== 'bomb');
+      // console.log(openedSafeCells.length + ' : ' + safeCells.length);
       return openedSafeCells.length === safeCells.length;
     }
 
@@ -26,6 +27,8 @@ export default class MinesweeperGame {
     const buttonsArray = Array.from(this.field.querySelectorAll('.cell'));
 
     this.loadSave();
+
+    this.sendCountEvent(document);
 
     this.field.addEventListener('click', (event) => {
       const button = event.target.closest('.cell');
@@ -46,6 +49,8 @@ export default class MinesweeperGame {
       if (isWin(this.matrix)) {
         this.winFunc();
       }
+
+      this.sendCountEvent(document);
     });
 
     this.field.addEventListener('contextmenu', (event) => {
@@ -57,6 +62,8 @@ export default class MinesweeperGame {
       toggleFlag(button, this.matrix);
 
       this.saveGame();
+
+      this.sendCountEvent(document);
     });
 
     this.field.addEventListener('dblclick', (event) => {
@@ -124,5 +131,17 @@ export default class MinesweeperGame {
   lossFunc() {
     alert('loss');
     this.removeSave();
+  }
+
+  sendCountEvent(from) {
+    const countRemainingBombs = new Event('count', { bubbles: true });
+    from.dispatchEvent(countRemainingBombs);
+  }
+
+  countRemainingBombs(bombsAmount) {
+    if (!this.matrix) return '';
+
+    const flaggedCellsAmount = this.matrix.filter((cell) => cell.status === 'flagged').length;
+    return bombsAmount - flaggedCellsAmount;
   }
 }

@@ -1,9 +1,3 @@
-import {
-  HEIGHT,
-  WIDTH,
-  BOMBS_AMOUNT,
-} from '../game-options';
-
 export function getIndex(row, col, size) {
   return row * size + col;
 }

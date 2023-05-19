@@ -3,6 +3,7 @@ import './sass/main.scss';
 import {
   createContainer,
   createRestartButton,
+  createBombCounter,
 } from './modules/edit-HTML';
 
 import {
@@ -15,6 +16,11 @@ import MinesweeperGame from './modules/MinesweeperGame';
 const container = createContainer(document.body);
 
 const minesweeperGame = new MinesweeperGame(container);
+
+const bombCounter = createBombCounter(container);
+document.addEventListener('count', () => {
+  bombCounter.innerHTML = minesweeperGame.countRemainingBombs(BOMBS_AMOUNT);
+});
 
 minesweeperGame.start(SIZE, BOMBS_AMOUNT);
 
