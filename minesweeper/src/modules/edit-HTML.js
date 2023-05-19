@@ -36,3 +36,12 @@ export function createBombCounter(where) {
 
   return bombCounter;
 }
+
+export function createMovesCounter(where) {
+  const movesCounter = document.createElement('button');
+  movesCounter.classList.add('moves-counter');
+  movesCounter.innerHTML = 0;
+  where.insertAdjacentElement('afterbegin', movesCounter);
+
+  return movesCounter;
+}

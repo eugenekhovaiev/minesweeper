@@ -38,6 +38,10 @@ export default class MinesweeperGame {
         this.matrix = createMatrix(size, bombsAmount, buttonsArray, button);
       }
 
+      if (!button.classList.contains('cell_opened')) {
+        this.sendMoveEvent(document);
+      }
+
       const isSafe = openCell(button, this.matrix);
 
       this.saveGame();
@@ -58,6 +62,10 @@ export default class MinesweeperGame {
       const button = event.target.closest('.cell');
       if (!button) return;
 
+      if (!button.classList.contains('cell_opened')) {
+        this.sendMoveEvent(document);
+      }
+
       // TODO fix disapering flag
       toggleFlag(button, this.matrix);
 
@@ -69,6 +77,8 @@ export default class MinesweeperGame {
     this.field.addEventListener('dblclick', (event) => {
       const button = event.target.closest('.cell');
       if (!button) return;
+
+      this.sendMoveEvent(document);
 
       const isSafe = openSurrCells(button, this.matrix);
 
@@ -90,15 +100,21 @@ export default class MinesweeperGame {
     this.field = null;
     this.removeSave();
 
+    const movesCounter = document.querySelector('.moves-counter');
+    movesCounter.innerHTML = 0;
+
     this.start(size, bombsAmount, this.where);
   }
 
   saveGame() {
     localStorage.setItem('goodSave420', JSON.stringify(this.matrix));
+    // console.log(document.querySelector('.moves-counter'));
+    localStorage.setItem('goodMovesSave420', document.querySelector('.moves-counter').innerHTML);
   }
 
   removeSave() {
     localStorage.setItem('goodSave420', null);
+    localStorage.setItem('goodMoveSave420', null);
   }
 
   loadSave() {
@@ -119,6 +135,7 @@ export default class MinesweeperGame {
           toggleFlag(cell.button, this.matrix);
         }
       });
+      this.sendLoadEvent(document);
     }
   }
 
@@ -133,8 +150,8 @@ export default class MinesweeperGame {
   }
 
   sendCountEvent(from) {
-    const countRemainingBombs = new Event('count', { bubbles: true });
-    from.dispatchEvent(countRemainingBombs);
+    const count = new Event('count', { bubbles: true });
+    from.dispatchEvent(count);
   }
 
   countRemainingBombs(bombsAmount) {
@@ -142,5 +159,15 @@ export default class MinesweeperGame {
 
     const flaggedCellsAmount = this.matrix.filter((cell) => cell.status === 'flagged').length;
     return bombsAmount - flaggedCellsAmount;
+  }
+
+  sendMoveEvent(from) {
+    const move = new Event('move', { bubbles: true });
+    from.dispatchEvent(move);
+  }
+
+  sendLoadEvent(from) {
+    const load = new Event('load', { bubbles: true });
+    from.dispatchEvent(load);
   }
 }
