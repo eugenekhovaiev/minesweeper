@@ -8,6 +8,31 @@ import {
   openSurrCells,
 } from './matrix/aditionals';
 
+function sendCountIncreaseEvent(from) {
+  const change = new Event('increaseCounter', { bubbles: true });
+  from.dispatchEvent(change);
+}
+
+function sendCountDecreaseEvent(from) {
+  const change = new Event('decreaseCounter', { bubbles: true });
+  from.dispatchEvent(change);
+}
+
+function sendCountInitEvent(from) {
+  const init = new Event('initCounter', { bubbles: true });
+  from.dispatchEvent(init);
+}
+
+function sendMoveEvent(from) {
+  const move = new Event('move', { bubbles: true });
+  from.dispatchEvent(move);
+}
+
+function sendLoadEvent(from) {
+  const load = new Event('loadSave', { bubbles: true });
+  from.dispatchEvent(load);
+}
+
 export default class MinesweeperGame {
   constructor(where) {
     this.where = where;
@@ -34,11 +59,11 @@ export default class MinesweeperGame {
 
       if (!this.matrix) {
         this.matrix = createMatrix(size, bombsAmount, buttonsArray, button);
-        this.sendCountInitEvent(document);
+        sendCountInitEvent(document);
       }
 
       if (!button.classList.contains('cell_opened')) {
-        this.sendMoveEvent(document);
+        sendMoveEvent(document);
       }
 
       const isSafe = openCell(button, this.matrix);
@@ -60,13 +85,13 @@ export default class MinesweeperGame {
       if (!button) return;
 
       if (!button.classList.contains('cell_flagged')) {
-        this.sendCountDecreaseEvent(document);
+        sendCountDecreaseEvent(document);
       } else {
-        this.sendCountIncreaseEvent(document);
+        sendCountIncreaseEvent(document);
       }
 
       if (!button.classList.contains('cell_opened')) {
-        this.sendMoveEvent(document);
+        sendMoveEvent(document);
       }
 
       // TODO fix disapering flag
@@ -79,7 +104,7 @@ export default class MinesweeperGame {
       const button = event.target.closest('.cell');
       if (!button) return;
 
-      this.sendMoveEvent(document);
+      sendMoveEvent(document);
 
       const isSafe = openSurrCells(button, this.matrix);
 
@@ -138,7 +163,7 @@ export default class MinesweeperGame {
           toggleFlag(cell.button, this.matrix);
         }
       });
-      this.sendLoadEvent(document);
+      sendLoadEvent(document);
     }
   }
 
@@ -150,30 +175,5 @@ export default class MinesweeperGame {
   lossFunc() {
     alert('loss');
     this.removeSave();
-  }
-
-  sendCountIncreaseEvent(from) {
-    const change = new Event('increaseCounter', { bubbles: true });
-    from.dispatchEvent(change);
-  }
-
-  sendCountDecreaseEvent(from) {
-    const change = new Event('decreaseCounter', { bubbles: true });
-    from.dispatchEvent(change);
-  }
-
-  sendCountInitEvent(from) {
-    const init = new Event('initCounter', { bubbles: true });
-    from.dispatchEvent(init);
-  }
-
-  sendMoveEvent(from) {
-    const move = new Event('move', { bubbles: true });
-    from.dispatchEvent(move);
-  }
-
-  sendLoadEvent(from) {
-    const load = new Event('loadSave', { bubbles: true });
-    from.dispatchEvent(load);
   }
 }
