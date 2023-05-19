@@ -28,9 +28,9 @@ export function createRestartButton(where) {
   return restartButton;
 }
 
-export function createBombCounter(where) {
+export function createBombsCounter(where) {
   const bombCounter = document.createElement('button');
-  bombCounter.classList.add('bomb-counter');
+  bombCounter.classList.add('bombs-counter');
   // bombCounter.innerHTML = bombsAmount;
   where.insertAdjacentElement('afterbegin', bombCounter);
 

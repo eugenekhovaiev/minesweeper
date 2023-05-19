@@ -28,14 +28,13 @@ export default class MinesweeperGame {
 
     this.loadSave();
 
-    this.sendCountEvent(document);
-
     this.field.addEventListener('click', (event) => {
       const button = event.target.closest('.cell');
       if (!button) return;
 
       if (!this.matrix) {
         this.matrix = createMatrix(size, bombsAmount, buttonsArray, button);
+        this.sendCountInitEvent(document);
       }
 
       if (!button.classList.contains('cell_opened')) {
@@ -53,14 +52,18 @@ export default class MinesweeperGame {
       if (isWin(this.matrix)) {
         this.winFunc();
       }
-
-      this.sendCountEvent(document);
     });
 
     this.field.addEventListener('contextmenu', (event) => {
       event.preventDefault();
       const button = event.target.closest('.cell');
       if (!button) return;
+
+      if (!button.classList.contains('cell_flagged')) {
+        this.sendCountDecreaseEvent(document);
+      } else {
+        this.sendCountIncreaseEvent(document);
+      }
 
       if (!button.classList.contains('cell_opened')) {
         this.sendMoveEvent(document);
@@ -70,8 +73,6 @@ export default class MinesweeperGame {
       toggleFlag(button, this.matrix);
 
       this.saveGame();
-
-      this.sendCountEvent(document);
     });
 
     this.field.addEventListener('dblclick', (event) => {
@@ -110,11 +111,13 @@ export default class MinesweeperGame {
     localStorage.setItem('goodSave420', JSON.stringify(this.matrix));
     // console.log(document.querySelector('.moves-counter'));
     localStorage.setItem('goodMovesSave420', document.querySelector('.moves-counter').innerHTML);
+    localStorage.setItem('goodBombsSave420', document.querySelector('.bombs-counter').innerHTML);
   }
 
   removeSave() {
     localStorage.setItem('goodSave420', null);
-    localStorage.setItem('goodMoveSave420', null);
+    localStorage.setItem('goodMovesSave420', null);
+    localStorage.setItem('goodBombsSave420', null);
   }
 
   loadSave() {
@@ -149,16 +152,19 @@ export default class MinesweeperGame {
     this.removeSave();
   }
 
-  sendCountEvent(from) {
-    const count = new Event('count', { bubbles: true });
-    from.dispatchEvent(count);
+  sendCountIncreaseEvent(from) {
+    const change = new Event('increaseCounter', { bubbles: true });
+    from.dispatchEvent(change);
   }
 
-  countRemainingBombs(bombsAmount) {
-    if (!this.matrix) return '';
+  sendCountDecreaseEvent(from) {
+    const change = new Event('decreaseCounter', { bubbles: true });
+    from.dispatchEvent(change);
+  }
 
-    const flaggedCellsAmount = this.matrix.filter((cell) => cell.status === 'flagged').length;
-    return bombsAmount - flaggedCellsAmount;
+  sendCountInitEvent(from) {
+    const init = new Event('initCounter', { bubbles: true });
+    from.dispatchEvent(init);
   }
 
   sendMoveEvent(from) {
@@ -167,7 +173,7 @@ export default class MinesweeperGame {
   }
 
   sendLoadEvent(from) {
-    const load = new Event('load', { bubbles: true });
+    const load = new Event('loadSave', { bubbles: true });
     from.dispatchEvent(load);
   }
 }
