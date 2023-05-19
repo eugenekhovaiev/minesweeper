@@ -9,12 +9,12 @@ import {
 } from './matrix/aditionals';
 
 function sendCountIncreaseEvent(from) {
-  const change = new Event('increaseCounter', { bubbles: true });
+  const change = new Event('increasecounter', { bubbles: true });
   from.dispatchEvent(change);
 }
 
 function sendCountDecreaseEvent(from) {
-  const change = new Event('decreaseCounter', { bubbles: true });
+  const change = new Event('decreasecounter', { bubbles: true });
   from.dispatchEvent(change);
 }
 
@@ -29,7 +29,7 @@ function sendMoveEvent(from) {
 }
 
 function sendLoadEvent(from) {
-  const load = new Event('loadSave', { bubbles: true });
+  const load = new Event('loadsave', { bubbles: true });
   from.dispatchEvent(load);
 }
 

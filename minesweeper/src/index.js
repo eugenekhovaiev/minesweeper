@@ -23,10 +23,10 @@ const container = createContainer(document.body);
 const minesweeperGame = new MinesweeperGame(container);
 
 const bombsCounter = new RemainingBombsCounter(BOMBS_AMOUNT, container);
-document.addEventListener('increaseCounter', () => {
+document.addEventListener('increasecounter', () => {
   bombsCounter.increase();
 });
-document.addEventListener('decreaseCounter', () => {
+document.addEventListener('decreasecounter', () => {
   bombsCounter.decrease();
 });
 
@@ -37,7 +37,7 @@ document.addEventListener('move', () => {
 
 const timer = new Timer(container);
 
-document.addEventListener('loadSave', () => {
+document.addEventListener('loadsave', () => {
   movesCounter.load(+localStorage.getItem('goodMovesSave420'));
   bombsCounter.load(+localStorage.getItem('goodBombsSave420'));
   timer.load(+localStorage.getItem('goodTimeSave420'));
