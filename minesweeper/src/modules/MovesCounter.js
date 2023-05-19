@@ -11,11 +11,6 @@ export default class MovesCounter {
     this.node.innerHTML = this.amount;
   }
 
-  refresh() {
-    this.amount = 0;
-    this.node.innerHTML = this.amount;
-  }
-
   load(newAmount) {
     this.amount = newAmount;
     this.node.innerHTML = this.amount;

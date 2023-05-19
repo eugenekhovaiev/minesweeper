@@ -45,3 +45,12 @@ export function createMovesCounter(where) {
 
   return movesCounter;
 }
+
+export function createTimer(where) {
+  const timer = document.createElement('button');
+  timer.classList.add('timer');
+  timer.innerHTML = 0;
+  where.insertAdjacentElement('afterbegin', timer);
+
+  return timer;
+}
