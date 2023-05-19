@@ -94,16 +94,16 @@ export default class MinesweeperGame {
   }
 
   saveGame() {
-    localStorage.setItem('save', JSON.stringify(this.matrix));
+    localStorage.setItem('goodSave420', JSON.stringify(this.matrix));
   }
 
   removeSave() {
-    localStorage.setItem('save', null);
+    localStorage.setItem('goodSave420', null);
   }
 
   loadSave() {
     const buttonsArray = Array.from(this.field.querySelectorAll('.cell'));
-    const save = JSON.parse(localStorage.getItem('save'));
+    const save = JSON.parse(localStorage.getItem('goodSave420'));
 
     if (save) {
       this.matrix = save.map((cell, index) => {
@@ -119,7 +119,6 @@ export default class MinesweeperGame {
           toggleFlag(cell.button, this.matrix);
         }
       });
-      // console.log(this.matrix);
     }
   }
 
