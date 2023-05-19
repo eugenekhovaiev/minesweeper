@@ -3,11 +3,10 @@ import './sass/main.scss';
 import {
   createContainer,
   createRestartButton,
-} from './modules/editHTML';
+} from './modules/edit-HTML';
 
 import {
-  HEIGHT,
-  WIDTH,
+  SIZE,
   BOMBS_AMOUNT,
 } from './modules/game-options';
 
@@ -17,9 +16,9 @@ const container = createContainer(document.body);
 
 const minesweeperGame = new MinesweeperGame(container);
 
-minesweeperGame.start(WIDTH, HEIGHT, BOMBS_AMOUNT);
+minesweeperGame.start(SIZE, BOMBS_AMOUNT);
 
 const restartButton = createRestartButton(container);
 restartButton.addEventListener('click', () => {
-  minesweeperGame.restart(WIDTH, HEIGHT, BOMBS_AMOUNT, container);
+  minesweeperGame.restart(SIZE, BOMBS_AMOUNT, container);
 });

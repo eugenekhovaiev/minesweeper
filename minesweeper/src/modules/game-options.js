@@ -1,3 +1,2 @@
-export const WIDTH = 10;
-export const HEIGHT = 10;
+export const SIZE = 10;
 export const BOMBS_AMOUNT = 3;

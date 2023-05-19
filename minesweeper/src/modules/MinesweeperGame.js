@@ -1,11 +1,12 @@
-import { createField } from './editHTML';
+import { createField } from './edit-HTML';
+
+import createMatrix from './matrix/createMatrix';
 
 import {
-  createMatrix,
   openCell,
   toggleFlag,
   openSurrCells,
-} from './matrix';
+} from './matrix/aditionals';
 
 export default class MinesweeperGame {
   constructor(where) {
@@ -14,14 +15,14 @@ export default class MinesweeperGame {
     this.field = null;
   }
 
-  start(fieldWidth, fieldHeight, bombsAmount) {
+  start(size, bombsAmount) {
     function isWin(matrix) {
       const openedSafeCells = matrix.filter((cell) => cell.status === 'opened' && cell.inner !== 'bomb');
       const safeCells = matrix.filter((cell) => cell.inner !== 'bomb');
       return openedSafeCells.length === safeCells.length;
     }
 
-    this.field = createField(this.where, fieldWidth, fieldHeight);
+    this.field = createField(this.where, size);
     const buttonsArray = Array.from(this.field.querySelectorAll('.cell'));
 
     this.loadSave();
@@ -31,7 +32,7 @@ export default class MinesweeperGame {
       if (!button) return;
 
       if (!this.matrix) {
-        this.matrix = createMatrix(fieldWidth, fieldHeight, buttonsArray, button);
+        this.matrix = createMatrix(size, bombsAmount, buttonsArray, button);
       }
 
       const isSafe = openCell(button, this.matrix);
@@ -76,13 +77,13 @@ export default class MinesweeperGame {
     });
   }
 
-  restart(fieldWidth, fieldHeight, fieldBombsAmount) {
+  restart(size, bombsAmount) {
     this.matrix = null;
     this.field.remove();
     this.field = null;
     this.removeSave();
 
-    this.start(fieldWidth, fieldHeight, fieldBombsAmount, this.where);
+    this.start(size, bombsAmount, this.where);
   }
 
   saveGame() {

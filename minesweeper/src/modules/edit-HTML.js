@@ -1,11 +1,11 @@
-export function createField(where, width, height) {
+export function createField(where, size) {
   const field = document.createElement('div');
   field.classList.add('field');
 
   const button = document.createElement('button');
   button.classList.add('cell');
 
-  field.innerHTML = button.outerHTML.repeat(width * height);
+  field.innerHTML = button.outerHTML.repeat(size * size);
   where.insertAdjacentElement('beforeend', field);
 
   return field;
