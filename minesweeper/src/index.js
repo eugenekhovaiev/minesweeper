@@ -11,12 +11,15 @@ import {
 } from './modules/game-options';
 
 import MinesweeperGame from './modules/MinesweeperGame';
+
 import RemainingBombsCounter from './modules/RemainingBombsCounter';
 import MovesCounter from './modules/MovesCounter';
 import Timer from './modules/Timer';
 
 import winFunc from './modules/end-funcs/winFunc';
 import lossFunc from './modules/end-funcs/lossFunc';
+
+import saveGame from './modules/saving-loading/saveGame';
 
 const container = createContainer(document.body);
 
@@ -41,6 +44,7 @@ document.addEventListener('loadsave', () => {
   movesCounter.load(+localStorage.getItem('goodMovesSave420'));
   bombsCounter.load(+localStorage.getItem('goodBombsSave420'));
   timer.load(+localStorage.getItem('goodTimeSave420'));
+  timer.start();
 });
 
 document.addEventListener('init', () => {
@@ -66,4 +70,8 @@ restartButton.addEventListener('click', () => {
   bombsCounter.load('');
   timer.stop();
   timer.load(0);
+});
+
+window.addEventListener('beforeunload', () => {
+  saveGame(minesweeperGame.matrix);
 });

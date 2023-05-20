@@ -8,6 +8,9 @@ import {
   openSurrCells,
 } from './matrix/aditionals';
 
+import removeSave from './saving-loading/removeSave';
+import loadSave from './saving-loading/loadSave';
+
 function sendCountIncreaseEvent(from) {
   const change = new Event('increasecounter', { bubbles: true });
   from.dispatchEvent(change);
@@ -26,11 +29,6 @@ function sendInitEvent(from) {
 function sendMoveEvent(from) {
   const move = new Event('move', { bubbles: true });
   from.dispatchEvent(move);
-}
-
-function sendLoadEvent(from) {
-  const load = new Event('loadsave', { bubbles: true });
-  from.dispatchEvent(load);
 }
 
 function sendWinEvent(from) {
@@ -61,7 +59,7 @@ export default class MinesweeperGame {
     this.field = createField(this.where, size);
     const buttonsArray = Array.from(this.field.querySelectorAll('.cell'));
 
-    this.loadSave();
+    this.matrix = loadSave(this.matrix);
 
     this.field.addEventListener('click', (event) => {
       const button = event.target.closest('.cell');
@@ -78,14 +76,12 @@ export default class MinesweeperGame {
 
       const isSafe = openCell(button, this.matrix);
 
-      this.saveGame();
-
       if (!isSafe) {
-        this.loss();
+        sendLossEvent(document);
       }
 
       if (isWin(this.matrix)) {
-        this.win();
+        sendWinEvent(document);
       }
     });
 
@@ -106,8 +102,6 @@ export default class MinesweeperGame {
 
       // TODO fix disapering flag
       toggleFlag(button, this.matrix);
-
-      this.saveGame();
     });
 
     this.field.addEventListener('dblclick', (event) => {
@@ -118,14 +112,12 @@ export default class MinesweeperGame {
 
       const isSafe = openSurrCells(button, this.matrix);
 
-      this.saveGame();
-
       if (!isSafe) {
-        this.loss();
+        sendLossEvent(document);
       }
 
       if (isWin(this.matrix)) {
-        this.win();
+        sendWinEvent(document);
       }
     });
   }
@@ -134,57 +126,11 @@ export default class MinesweeperGame {
     this.matrix = null;
     this.field.remove();
     this.field = null;
-    this.removeSave();
+    removeSave();
 
     const movesCounter = document.querySelector('.moves-counter');
     movesCounter.innerHTML = 0;
 
     this.start(size, bombsAmount, this.where);
-  }
-
-  saveGame() {
-    localStorage.setItem('goodSave420', JSON.stringify(this.matrix));
-    localStorage.setItem('goodMovesSave420', document.querySelector('.moves-counter').innerHTML);
-    localStorage.setItem('goodBombsSave420', document.querySelector('.bombs-counter').innerHTML);
-    localStorage.setItem('goodTimeSave420', document.querySelector('.timer').innerHTML);
-  }
-
-  removeSave() {
-    localStorage.setItem('goodSave420', null);
-    localStorage.setItem('goodMovesSave420', null);
-    localStorage.setItem('goodBombsSave420', null);
-    localStorage.setItem('goodTimeSave420', null);
-  }
-
-  loadSave() {
-    const buttonsArray = Array.from(this.field.querySelectorAll('.cell'));
-    const save = JSON.parse(localStorage.getItem('goodSave420'));
-
-    if (save) {
-      this.matrix = save.map((cell, index) => {
-        const button = buttonsArray[index];
-        cell.button = button;
-        return cell;
-      });
-
-      this.matrix.forEach((cell) => {
-        if (cell.status === 'opened') {
-          openCell(cell.button, this.matrix);
-        } else if (cell.status === 'flagged') {
-          toggleFlag(cell.button, this.matrix);
-        }
-      });
-      sendLoadEvent(document);
-    }
-  }
-
-  win() {
-    this.removeSave();
-    sendWinEvent(document);
-  }
-
-  loss() {
-    this.removeSave();
-    sendLossEvent(document);
   }
 }
