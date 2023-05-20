@@ -24,22 +24,16 @@ import playAudio from './modules/playAudio';
 
 import save from './modules/saving-loading/save';
 
-const container = createContainer(document.body);
-
-const minesweeperGame = new MinesweeperGame(container);
-
-const bombsCounter = new RemainingBombsCounter(BOMBS_AMOUNT, container);
-
 const flagAudio = new Audio('assets/audio/flag.wav');
 const boomAudio = new Audio('assets/audio/boom.wav');
 const winAudio = new Audio('assets/audio/win.wav');
 const revealAudio = new Audio('assets/audio/reveal.wav');
 
-const soundButton = new SoundButton(document.body);
-soundButton.node.addEventListener('click', () => {
-  soundButton.change();
-});
+const container = createContainer(document.body);
 
+const minesweeperGame = new MinesweeperGame(container);
+
+const bombsCounter = new RemainingBombsCounter(BOMBS_AMOUNT, container);
 document.addEventListener('increasecounter', () => {
   bombsCounter.increase();
   playAudio(flagAudio);
@@ -76,6 +70,20 @@ document.addEventListener('loss', () => {
   lossFunc();
 });
 
+const restartButton = createRestartButton(container);
+restartButton.addEventListener('click', () => {
+  minesweeperGame.restart(SIZE, BOMBS_AMOUNT, container);
+  movesCounter.load(0);
+  bombsCounter.load('');
+  timer.stop();
+  timer.load(0);
+});
+
+const soundButton = new SoundButton(document.body);
+soundButton.node.addEventListener('click', () => {
+  soundButton.change();
+});
+
 document.addEventListener('loadsave', () => {
   movesCounter.load(+localStorage.getItem('goodMovesSave420'));
   bombsCounter.load(+localStorage.getItem('goodBombsSave420'));
@@ -84,15 +92,6 @@ document.addEventListener('loadsave', () => {
   if (localStorage.getItem('goodSoundSave420') === 'Off') {
     soundButton.change();
   }
-});
-
-const restartButton = createRestartButton(container);
-restartButton.addEventListener('click', () => {
-  minesweeperGame.restart(SIZE, BOMBS_AMOUNT, container);
-  movesCounter.load(0);
-  bombsCounter.load('');
-  timer.stop();
-  timer.load(0);
 });
 
 window.addEventListener('beforeunload', () => {
