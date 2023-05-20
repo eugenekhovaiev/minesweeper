@@ -1,4 +1,6 @@
 .field {
   display: grid;
-  grid-template-columns: repeat($field-width, $cell-size);
+  grid-template-columns: repeat($field-size, $cell-size);
+
+  justify-content: center;
 }
