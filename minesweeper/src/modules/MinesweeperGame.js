@@ -90,14 +90,14 @@ export default class MinesweeperGame {
       const button = event.target.closest('.cell');
       if (!button) return;
 
-      if (!button.classList.contains('cell_flagged')) {
-        sendCountDecreaseEvent(document);
-      } else {
-        sendCountIncreaseEvent(document);
-      }
-
       if (!button.classList.contains('cell_opened')) {
         sendMoveEvent(document);
+
+        if (!button.classList.contains('cell_flagged')) {
+          sendCountDecreaseEvent(document);
+        } else {
+          sendCountIncreaseEvent(document);
+        }
       }
 
       // TODO fix disapering flag
