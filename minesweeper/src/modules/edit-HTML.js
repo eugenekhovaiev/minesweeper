@@ -54,3 +54,11 @@ export function createTimer(where) {
 
   return timer;
 }
+
+export function createHighScoreTable(where) {
+  const highScoreTable = document.createElement('ol');
+  highScoreTable.classList.add('high-score-table');
+  where.insertAdjacentElement('beforeend', highScoreTable);
+
+  return highScoreTable;
+}

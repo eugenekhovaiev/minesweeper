@@ -15,6 +15,8 @@ import MinesweeperGame from './modules/MinesweeperGame';
 import RemainingBombsCounter from './modules/RemainingBombsCounter';
 import MovesCounter from './modules/MovesCounter';
 import Timer from './modules/Timer';
+// import HighScoreTable from './modules/HighScoreTable';
+import HighScoreTable from './modules/HighScoreTable';
 
 import winFunc from './modules/end-funcs/winFunc';
 import lossFunc from './modules/end-funcs/lossFunc';
@@ -40,28 +42,27 @@ document.addEventListener('move', () => {
 
 const timer = new Timer(container);
 
-document.addEventListener('loadsave', () => {
-  movesCounter.load(+localStorage.getItem('goodMovesSave420'));
-  bombsCounter.load(+localStorage.getItem('goodBombsSave420'));
-  timer.load(+localStorage.getItem('goodTimeSave420'));
-  timer.start();
-});
-
 document.addEventListener('init', () => {
   bombsCounter.load(BOMBS_AMOUNT);
   timer.start();
 });
 
+const highScoreTable = new HighScoreTable(document.body);
 document.addEventListener('win', () => {
   timer.stop();
-  winFunc(timer.node.innerHTML, movesCounter.node.innerHTML);
+  winFunc(timer.node.innerHTML, movesCounter.node.innerHTML, highScoreTable);
 });
 document.addEventListener('loss', () => {
   timer.stop();
   lossFunc();
 });
 
-minesweeperGame.start(SIZE, BOMBS_AMOUNT);
+document.addEventListener('loadsave', () => {
+  movesCounter.load(+localStorage.getItem('goodMovesSave420'));
+  bombsCounter.load(+localStorage.getItem('goodBombsSave420'));
+  timer.load(+localStorage.getItem('goodTimeSave420'));
+  timer.start();
+});
 
 const restartButton = createRestartButton(container);
 restartButton.addEventListener('click', () => {
@@ -75,3 +76,9 @@ restartButton.addEventListener('click', () => {
 window.addEventListener('beforeunload', () => {
   saveGame(minesweeperGame.matrix);
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+  highScoreTable.load(JSON.parse(localStorage.getItem('goodHighScoreSave420')));
+});
+
+minesweeperGame.start(SIZE, BOMBS_AMOUNT);
