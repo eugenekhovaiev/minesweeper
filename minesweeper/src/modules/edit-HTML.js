@@ -21,7 +21,7 @@ export function createContainer(where) {
 
 export function createRestartButton(where) {
   const restartButton = document.createElement('button');
-  restartButton.classList.add('restart');
+  restartButton.classList.add('restart-button');
   restartButton.innerHTML = 'Restart';
   where.insertAdjacentElement('afterbegin', restartButton);
 
@@ -61,4 +61,13 @@ export function createHighScoreTable(where) {
   where.insertAdjacentElement('beforeend', highScoreTable);
 
   return highScoreTable;
+}
+
+export function createSoundButton(where) {
+  const soundButton = document.createElement('button');
+  soundButton.classList.add('sound-button');
+  soundButton.innerHTML = 'On';
+  where.insertAdjacentElement('afterbegin', soundButton);
+
+  return soundButton;
 }

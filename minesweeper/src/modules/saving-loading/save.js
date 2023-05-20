@@ -1,4 +1,4 @@
-export default function saveGame(matrix) {
+export default function save(matrix) {
   if (!matrix) {
     localStorage.setItem('goodSave420', null);
   } else {
@@ -10,10 +10,11 @@ export default function saveGame(matrix) {
 
   let highScoreArray = Array.from(document.querySelectorAll('.record'));
   if (highScoreArray.length > 0) {
-    console.log(highScoreArray);
     highScoreArray = highScoreArray.map((record) => record.innerHTML);
     localStorage.setItem('goodHighScoreSave420', JSON.stringify(highScoreArray));
   } else {
     localStorage.setItem('goodHighScoreSave420', null);
   }
+
+  localStorage.setItem('goodSoundSave420', document.querySelector('.sound-button').innerHTML);
 }

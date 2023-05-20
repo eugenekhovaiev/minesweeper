@@ -71,7 +71,7 @@ export default class MinesweeperGame {
       }
 
       if (!button.classList.contains('cell_opened')) {
-        sendMoveEvent(document);
+        sendMoveEvent(button);
       }
 
       const isSafe = openCell(button, this.matrix);
@@ -108,7 +108,7 @@ export default class MinesweeperGame {
       const button = event.target.closest('.cell');
       if (!button) return;
 
-      sendMoveEvent(document);
+      sendMoveEvent(button);
 
       const isSafe = openSurrCells(button, this.matrix);
 
