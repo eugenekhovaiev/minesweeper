@@ -14,7 +14,13 @@ export default function createMatrix(size, bombsAmount, buttonsArray, saveButton
     const newMatrix = [...matrix];
 
     const safeButtonIndex = findButtonIndex(safeButton, newMatrix);
-    const saveCells = getSurrCells(safeButtonIndex, matrix);
+
+    let saveCells = [];
+    if (bombsAmount > matrix.length - 9) {
+      saveCells.push(matrix[safeButtonIndex]);
+    } else {
+      saveCells = [...getSurrCells(safeButtonIndex, matrix)];
+    }
 
     let minedCells = [...matrix].filter((cell) => !saveCells.includes(cell));
     minedCells = minedCells.sort(() => Math.random() - 0.5).slice(0, bombsAmount);

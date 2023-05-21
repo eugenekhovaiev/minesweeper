@@ -88,6 +88,12 @@ export default class MinesweeperGame {
     this.field.addEventListener('contextmenu', (event) => {
       event.preventDefault();
       const button = event.target.closest('.cell');
+
+      if (!this.matrix) {
+        this.matrix = createMatrix(size, bombsAmount, buttonsArray, button);
+        sendInitEvent(document);
+      }
+
       if (!button || button.classList.contains('cell_opened')) return;
 
       sendMoveEvent(document);

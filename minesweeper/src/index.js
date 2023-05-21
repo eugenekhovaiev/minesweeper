@@ -1,5 +1,4 @@
 import './sass/main.scss';
-// import * as bootstrap from 'bootstrap';
 
 import {
   createContainer,
@@ -36,27 +35,26 @@ const container = createContainer(document.body);
 
 const minesweeperGame = new MinesweeperGame(container);
 
-function sendNewGameEvent(from, size) {
-  const newGame = new CustomEvent('newgame', { bubbles: true, detail: { size } });
+function sendNewGameEvent(from) {
+  const newGame = new CustomEvent('newgame', { bubbles: true });
   from.dispatchEvent(newGame);
 }
 
 const sizeSelect = createSizeSelect(document.body);
 sizeSelect.addEventListener('change', (event) => {
-  console.log(event.target.value);
-  switch (event.target.value) {
-    case '10':
-      sendNewGameEvent(event.target, 10);
-      break;
-    case '15':
-      sendNewGameEvent(event.target, 15);
-      break;
-    case '25':
-      sendNewGameEvent(event.target, 25);
-      break;
-    default:
-      break;
-  }
+  // switch (event.target.value) {
+  //   case '10':
+  //     sendNewGameEvent(event.target);
+  //     break;
+  //   case '15':
+  //     sendNewGameEvent(event.target);
+  //     break;
+  //   case '25':
+  //     break;
+  //     default:
+  //       break;
+// }
+  sendNewGameEvent(event.target);
 });
 
 const bombsSlider = createBombsSlider(document.body);
@@ -64,7 +62,7 @@ const bombSliderInput = bombsSlider.querySelector('.bombs-slider__input');
 const bombSliderSelected = bombsSlider.querySelector('.bombs-slider__selected');
 bombSliderInput.addEventListener('input', () => {
   bombSliderSelected.innerHTML = bombSliderInput.value;
-  sendNewGameEvent(document, +sizeSelect.value);
+  sendNewGameEvent(document);
 });
 
 const bombsCounter = new RemainingBombsCounter(+bombSliderInput.value, container);
@@ -106,7 +104,7 @@ document.addEventListener('loss', () => {
 
 const restartButton = createRestartButton(container);
 restartButton.addEventListener('click', () => {
-  sendNewGameEvent(document, +sizeSelect.value);
+  sendNewGameEvent(document);
 });
 
 const soundButton = new SoundButton(document.body);
@@ -114,8 +112,8 @@ soundButton.node.addEventListener('click', () => {
   soundButton.change();
 });
 
-document.addEventListener('newgame', (event) => {
-  minesweeperGame.restart(event.detail.size, +bombSliderInput.value, container);
+document.addEventListener('newgame', () => {
+  minesweeperGame.restart(+sizeSelect.value, +bombSliderInput.value, container);
   movesCounter.load(0);
   bombsCounter.load(bombSliderInput.value);
   timer.stop();
