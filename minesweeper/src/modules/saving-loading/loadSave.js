@@ -1,7 +1,7 @@
 import {
   openCell,
   toggleFlag,
-} from '../matrix/aditionals';
+} from '../matrix/aditionalFuncs';
 
 function sendLoadEvent(from) {
   const load = new Event('loadsave', { bubbles: true });

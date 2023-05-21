@@ -2,7 +2,7 @@ import {
   getSurrCells,
   findButtonIndex,
   getIndex,
-} from './aditionals';
+} from './aditionalFuncs';
 
 export default function createMatrix(size, bombsAmount, buttonsArray, saveButton) {
   function countBombs(index, matrix) {

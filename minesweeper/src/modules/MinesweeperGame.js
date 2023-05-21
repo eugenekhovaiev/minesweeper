@@ -6,7 +6,7 @@ import {
   openCell,
   toggleFlag,
   openSurrCells,
-} from './matrix/aditionals';
+} from './matrix/aditionalFuncs';
 
 import removeSave from './saving-loading/removeSave';
 import loadSave from './saving-loading/loadSave';
@@ -70,7 +70,7 @@ export default class MinesweeperGame {
         sendInitEvent(document);
       }
 
-      if (!button.classList.contains('cell_opened')) {
+      if (!button.classList.contains('cell_opened') && !button.classList.contains('cell_flagged')) {
         sendMoveEvent(button);
       }
 
@@ -88,25 +88,22 @@ export default class MinesweeperGame {
     this.field.addEventListener('contextmenu', (event) => {
       event.preventDefault();
       const button = event.target.closest('.cell');
-      if (!button) return;
+      if (!button || button.classList.contains('cell_opened')) return;
 
-      if (!button.classList.contains('cell_opened')) {
-        sendMoveEvent(document);
+      sendMoveEvent(document);
 
-        if (!button.classList.contains('cell_flagged')) {
-          sendCountDecreaseEvent(document);
-        } else {
-          sendCountIncreaseEvent(document);
-        }
+      if (!button.classList.contains('cell_flagged')) {
+        sendCountDecreaseEvent(document);
+      } else {
+        sendCountIncreaseEvent(document);
       }
 
-      // TODO fix disapering flag
       toggleFlag(button, this.matrix);
     });
 
     this.field.addEventListener('dblclick', (event) => {
       const button = event.target.closest('.cell');
-      if (!button) return;
+      if (!button || button.classList.contains('cell_flagged')) return;
 
       sendMoveEvent(button);
 
