@@ -86,11 +86,36 @@ export function createSizeSelect(where) {
   const sizeSelect = document.createElement('select');
   sizeSelect.classList.add('size-select');
   sizeSelect.innerHTML = `
-  <option value="10">10x10</option>
-  <option value="15">15x15</option>
-  <option value="25">25x25</option>
+    <option value="10">10x10</option>
+    <option value="15">15x15</option>
+    <option value="25">25x25</option>
   `;
   where.insertAdjacentElement('afterbegin', sizeSelect);
 
   return sizeSelect;
+}
+
+export function createBombsSlider(where) {
+  const bombsSlider = document.createElement('div');
+  bombsSlider.classList.add('bombs-slider');
+  bombsSlider.innerHTML = `
+    <input class="bombs-slider__input" type="range" min="1" max="99" value="1" step="1">
+    <div class="bombs-slider__selected">1</div>
+  `;
+  // const slider = document.createElement('input');
+  // slider.classList.add('bombs-slider__input');
+  // slider.setAttribute('type', 'range');
+  // slider.setAttribute('min', '1');
+  // slider.setAttribute('max', '99');
+  // slider.setAttribute('value', '1');
+  // slider.setAttribute('step', '1');
+  // bombsSlider.insertAdjacentElement('beforeend', slider);
+
+  // const selected = document.createElement('div');
+  // selected.classList.add('bombs-slider__selected');
+  // selected.innerHTML = slider.value;
+  // bombsSlider.insertAdjacentElement('beforeend', selected);
+
+  where.insertAdjacentElement('afterbegin', bombsSlider);
+  return bombsSlider;
 }

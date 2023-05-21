@@ -4,7 +4,7 @@ module.exports = {
         "es2021": true
     },
     // "extends": "eslint:recommended",
-    extends: 'airbnb-base',
+    extends: "airbnb-base",
     "overrides": [
     ],
     "parserOptions": {
@@ -12,5 +12,9 @@ module.exports = {
         "sourceType": "module"
     },
     "rules": {
+        "no-param-reassign": 0,
+        "no-console": 0,
+        "class-methods-use-this": 1,
+        'import/no-extraneous-dependencies': 0
     }
 }

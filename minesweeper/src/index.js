@@ -5,11 +5,8 @@ import {
   createContainer,
   createRestartButton,
   createSizeSelect,
+  createBombsSlider,
 } from './modules/edit-HTML';
-
-import {
-  BOMBS_AMOUNT,
-} from './modules/game-options';
 
 import MinesweeperGame from './modules/MinesweeperGame';
 
@@ -39,43 +36,6 @@ const container = createContainer(document.body);
 
 const minesweeperGame = new MinesweeperGame(container);
 
-const bombsCounter = new RemainingBombsCounter(BOMBS_AMOUNT, container);
-document.addEventListener('increasecounter', () => {
-  bombsCounter.increase();
-  playAudio(flagAudio);
-});
-document.addEventListener('decreasecounter', () => {
-  bombsCounter.decrease();
-  playAudio(flagAudio);
-});
-
-const movesCounter = new MovesCounter(0, container);
-document.addEventListener('move', (event) => {
-  if (event.target.nodeName === 'BUTTON') {
-    playAudio(revealAudio);
-  }
-  movesCounter.increase();
-});
-
-const timer = new Timer(container);
-
-document.addEventListener('init', () => {
-  bombsCounter.load(BOMBS_AMOUNT);
-  timer.start();
-});
-
-const highScoreTable = new HighScoreTable(document.body);
-document.addEventListener('win', () => {
-  timer.stop();
-  playAudio(winAudio);
-  winFunc(timer.node.innerHTML, movesCounter.node.innerHTML, highScoreTable);
-});
-document.addEventListener('loss', () => {
-  timer.stop();
-  playAudio(boomAudio);
-  lossFunc();
-});
-
 function sendNewGameEvent(from, size) {
   const newGame = new CustomEvent('newgame', { bubbles: true, detail: { size } });
   from.dispatchEvent(newGame);
@@ -99,6 +59,51 @@ sizeSelect.addEventListener('change', (event) => {
   }
 });
 
+const bombsSlider = createBombsSlider(document.body);
+const bombSliderInput = bombsSlider.querySelector('.bombs-slider__input');
+const bombSliderSelected = bombsSlider.querySelector('.bombs-slider__selected');
+bombSliderInput.addEventListener('input', () => {
+  bombSliderSelected.innerHTML = bombSliderInput.value;
+  sendNewGameEvent(document, +sizeSelect.value);
+});
+
+const bombsCounter = new RemainingBombsCounter(+bombSliderInput.value, container);
+document.addEventListener('increasecounter', () => {
+  bombsCounter.increase();
+  playAudio(flagAudio);
+});
+document.addEventListener('decreasecounter', () => {
+  bombsCounter.decrease();
+  playAudio(flagAudio);
+});
+
+const movesCounter = new MovesCounter(0, container);
+document.addEventListener('move', (event) => {
+  if (event.target.nodeName === 'BUTTON') {
+    playAudio(revealAudio);
+  }
+  movesCounter.increase();
+});
+
+const timer = new Timer(container);
+
+document.addEventListener('init', () => {
+  bombsCounter.load(+bombSliderInput.value);
+  timer.start();
+});
+
+const highScoreTable = new HighScoreTable(document.body);
+document.addEventListener('win', () => {
+  timer.stop();
+  playAudio(winAudio);
+  winFunc(timer.node.innerHTML, movesCounter.node.innerHTML, highScoreTable);
+});
+document.addEventListener('loss', () => {
+  timer.stop();
+  playAudio(boomAudio);
+  lossFunc();
+});
+
 const restartButton = createRestartButton(container);
 restartButton.addEventListener('click', () => {
   sendNewGameEvent(document, +sizeSelect.value);
@@ -110,9 +115,9 @@ soundButton.node.addEventListener('click', () => {
 });
 
 document.addEventListener('newgame', (event) => {
-  minesweeperGame.restart(event.detail.size, BOMBS_AMOUNT, container);
+  minesweeperGame.restart(event.detail.size, +bombSliderInput.value, container);
   movesCounter.load(0);
-  bombsCounter.load('');
+  bombsCounter.load(bombSliderInput.value);
   timer.stop();
   timer.load(0);
 });
@@ -136,9 +141,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const savedSize = +localStorage.getItem('goodSizeSave420');
   if (!savedSize) {
     sizeSelect.value = 10;
-    minesweeperGame.start(10, BOMBS_AMOUNT);
+    bombSliderInput.value = 10;
+    bombSliderSelected.innerHTML = 10;
+
+    minesweeperGame.start(10, 10);
   } else {
     sizeSelect.value = savedSize;
-    minesweeperGame.start(savedSize, BOMBS_AMOUNT);
+    bombSliderInput.value = +localStorage.getItem('goodBombsSave420');
+    bombSliderSelected.innerHTML = bombSliderInput.value;
+
+    minesweeperGame.start(savedSize, +bombSliderInput.value);
   }
 });
