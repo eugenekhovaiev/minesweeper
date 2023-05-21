@@ -7,13 +7,13 @@ import {
   createBombsSlider,
 } from './modules/edit-HTML';
 
-import MinesweeperGame from './modules/MinesweeperGame';
+import MinesweeperGame from './modules/components/MinesweeperGame';
 
-import RemainingBombsCounter from './modules/RemainingBombsCounter';
-import MovesCounter from './modules/MovesCounter';
-import Timer from './modules/Timer';
-import HighScoreTable from './modules/HighScoreTable';
-import SoundButton from './modules/SoundButton';
+import RemainingBombsCounter from './modules/components/RemainingBombsCounter';
+import MovesCounter from './modules/components/MovesCounter';
+import Timer from './modules/components/Timer';
+import HighScoreTable from './modules/components/HighScoreTable';
+import SoundButton from './modules/components/SoundButton';
 
 import winFunc from './modules/end-funcs/winFunc';
 import lossFunc from './modules/end-funcs/lossFunc';

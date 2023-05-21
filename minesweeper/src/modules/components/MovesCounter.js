@@ -1,4 +1,4 @@
-import { createMovesCounter } from './edit-HTML';
+import { createMovesCounter } from '../edit-HTML';
 
 export default class MovesCounter {
   constructor(amount, where) {

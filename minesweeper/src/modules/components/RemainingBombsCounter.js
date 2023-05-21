@@ -1,4 +1,4 @@
-import { createBombsCounter } from './edit-HTML';
+import { createBombsCounter } from '../edit-HTML';
 
 export default class RemainingBombsCounter {
   constructor(amount, where) {

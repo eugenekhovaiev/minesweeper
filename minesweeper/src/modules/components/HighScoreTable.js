@@ -1,6 +1,6 @@
-import { createHighScoreTable } from './edit-HTML';
+import { createHighScoreTable } from '../edit-HTML';
 
-import formatDate from './formatDate';
+import formatDate from '../formatDate';
 
 export default class HighScoreTable {
   constructor(where) {

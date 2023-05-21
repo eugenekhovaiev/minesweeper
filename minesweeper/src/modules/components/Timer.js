@@ -1,4 +1,4 @@
-import { createTimer } from './edit-HTML';
+import { createTimer } from '../edit-HTML';
 
 export default class Timer {
   constructor(where) {

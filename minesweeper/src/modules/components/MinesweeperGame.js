@@ -1,15 +1,15 @@
-import { createField } from './edit-HTML';
+import { createField } from '../edit-HTML';
 
-import createMatrix from './matrix/createMatrix';
+import createMatrix from '../matrix/createMatrix';
 
 import {
   openCell,
   toggleFlag,
   openSurrCells,
-} from './matrix/aditionalFuncs';
+} from '../matrix/aditionalFuncs';
 
-import removeSave from './saving-loading/removeSave';
-import loadSave from './saving-loading/loadSave';
+import removeSave from '../saving-loading/removeSave';
+import loadSave from '../saving-loading/loadSave';
 
 function sendCountIncreaseEvent(from) {
   const change = new Event('increasecounter', { bubbles: true });

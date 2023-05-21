@@ -1,4 +1,4 @@
-import { createSoundButton } from './edit-HTML';
+import { createSoundButton } from '../edit-HTML';
 
 export default class SoundButton {
   constructor(where) {
