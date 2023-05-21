@@ -42,18 +42,6 @@ function sendNewGameEvent(from) {
 
 const sizeSelect = createSizeSelect(document.body);
 sizeSelect.addEventListener('change', (event) => {
-  // switch (event.target.value) {
-  //   case '10':
-  //     sendNewGameEvent(event.target);
-  //     break;
-  //   case '15':
-  //     sendNewGameEvent(event.target);
-  //     break;
-  //   case '25':
-  //     break;
-  //     default:
-  //       break;
-// }
   sendNewGameEvent(event.target);
 });
 
@@ -99,7 +87,7 @@ document.addEventListener('win', () => {
 document.addEventListener('loss', () => {
   timer.stop();
   playAudio(boomAudio);
-  lossFunc();
+  lossFunc(minesweeperGame.matrix);
 });
 
 const restartButton = createRestartButton(container);

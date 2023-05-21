@@ -53,18 +53,18 @@ export function openCell(button, matrix) {
   }
 
   if (buttonCell.inner === 'bomb') {
-    button.innerHTML = 'X';
+    button.classList.add('cell_exploded');
     return false;
   }
 
-  button.innerHTML = matrix[buttonIndex].inner;
+  button.innerHTML = buttonCell.inner;
+  button.classList.add(`cell_${buttonCell.inner}`);
   return true;
 }
 
 export function openAllCells(matrix) {
   matrix.forEach((cell) => {
-    if (!cell.inner) return;
-    cell.button.innerHTML = cell.inner;
+    openCell(cell.button, matrix);
   });
 }
 
@@ -76,11 +76,9 @@ export function toggleFlag(button, matrix) {
   if (!button.classList.contains('cell_flagged')) {
     cell.status = 'flagged';
     button.classList.add('cell_flagged');
-    button.innerHTML = 'F';
   } else {
     cell.status = null;
     button.classList.remove('cell_flagged');
-    button.innerHTML = '';
   }
 }
 

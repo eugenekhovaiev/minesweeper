@@ -1,17 +1,59 @@
 .cell {
   display: block;
-  width: $cell-size;
-  height: $cell-size;
+  width: 40px;
+  height: 40px;
+  font-size: 1.5rem;
+  font-weight: 700;
 
   border: 1px solid black;
+  background-color: rgb(73, 73, 73);
+
+  transition: 0.1s all;
 
   cursor: pointer;
 
-  &_active {
-    background-color: red;
+  &:hover {
+    border: 1px solid white;
+  }
+
+  &:active {
+    transform: scale(102%);
   }
 
   &_opened {
-    background-color: rgb(187, 157, 163);
+    background-color: #c1c1c1;
+  }
+
+  &_flagged {
+    background: rgb(73, 73, 73) url('../assets/icons/red-flag.png') center center / 60% 60% no-repeat;
+  }
+
+  &_exploded {
+    background: red url('../assets/icons/bomb.png') center center / 60% 60% no-repeat;
+  }
+
+  &_1 {
+    color: blue;
+  }
+  &_2 {
+    color: green;
+  }
+  &_3 {
+    color: red;
+  }
+  &_4 {
+    color: darkblue;
+  }
+  &_5 {
+    color: brown;
+  }
+  &_6 {
+    color: turquoise;
+  }
+  &_7 {
+    color: black;
+  }
+  &_8 {
+    color: white;
   }
 }

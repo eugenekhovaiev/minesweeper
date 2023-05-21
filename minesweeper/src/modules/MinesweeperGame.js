@@ -78,9 +78,7 @@ export default class MinesweeperGame {
 
       if (!isSafe) {
         sendLossEvent(document);
-      }
-
-      if (isWin(this.matrix)) {
+      } else if (isWin(this.matrix)) {
         sendWinEvent(document);
       }
     });
@@ -117,9 +115,7 @@ export default class MinesweeperGame {
 
       if (!isSafe) {
         sendLossEvent(document);
-      }
-
-      if (isWin(this.matrix)) {
+      } else if (isWin(this.matrix)) {
         sendWinEvent(document);
       }
     });

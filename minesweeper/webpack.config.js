@@ -96,7 +96,17 @@ module.exports = {
       },
       {
         test: /\.(png|jpg|svg|gif)$/,
-        type: 'asset/resource'
+        type: 'asset/resource',
+        generator: {
+          filename: 'assets/icons/[name][ext]'
+        }
+      },
+      {
+        test: /\.svg$/,
+        type: 'asset',
+        generator: {
+          filename: 'assets/icons/[name].svg'
+        }
       },
       {
         test: /\.wav$/,
