@@ -17,4 +17,5 @@ export default function save(matrix) {
   }
 
   localStorage.setItem('goodSoundSave420', document.querySelector('.sound-button').innerHTML);
+  localStorage.setItem('goodSizeSave420', document.querySelector('.size-select').value);
 }

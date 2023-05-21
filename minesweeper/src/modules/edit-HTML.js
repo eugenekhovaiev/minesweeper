@@ -1,6 +1,16 @@
 export function createField(where, size) {
   const field = document.createElement('div');
   field.classList.add('field');
+  switch (size) {
+    case 15:
+      field.classList.add('field_normal');
+      break;
+    case 25:
+      field.classList.add('field_hard');
+      break;
+    default:
+      break;
+  }
 
   const button = document.createElement('button');
   button.classList.add('cell');
@@ -70,4 +80,17 @@ export function createSoundButton(where) {
   where.insertAdjacentElement('afterbegin', soundButton);
 
   return soundButton;
+}
+
+export function createSizeSelect(where) {
+  const sizeSelect = document.createElement('select');
+  sizeSelect.classList.add('size-select');
+  sizeSelect.innerHTML = `
+  <option value="10">10x10</option>
+  <option value="15">15x15</option>
+  <option value="25">25x25</option>
+  `;
+  where.insertAdjacentElement('afterbegin', sizeSelect);
+
+  return sizeSelect;
 }

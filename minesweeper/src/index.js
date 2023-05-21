@@ -1,12 +1,13 @@
 import './sass/main.scss';
+// import * as bootstrap from 'bootstrap';
 
 import {
   createContainer,
   createRestartButton,
+  createSizeSelect,
 } from './modules/edit-HTML';
 
 import {
-  SIZE,
   BOMBS_AMOUNT,
 } from './modules/game-options';
 
@@ -24,10 +25,15 @@ import playAudio from './modules/playAudio';
 
 import save from './modules/saving-loading/save';
 
-const flagAudio = new Audio('assets/audio/flag.wav');
-const boomAudio = new Audio('assets/audio/boom.wav');
-const winAudio = new Audio('assets/audio/win.wav');
-const revealAudio = new Audio('assets/audio/reveal.wav');
+import flagSoundFile from './assets/audio/flag.wav';
+import boomSoundFile from './assets/audio/boom.wav';
+import winSoundFile from './assets/audio/win.wav';
+import revealSoundFile from './assets/audio/reveal.wav';
+
+const flagAudio = new Audio(flagSoundFile);
+const boomAudio = new Audio(boomSoundFile);
+const winAudio = new Audio(winSoundFile);
+const revealAudio = new Audio(revealSoundFile);
 
 const container = createContainer(document.body);
 
@@ -70,18 +76,45 @@ document.addEventListener('loss', () => {
   lossFunc();
 });
 
+function sendNewGameEvent(from, size) {
+  const newGame = new CustomEvent('newgame', { bubbles: true, detail: { size } });
+  from.dispatchEvent(newGame);
+}
+
+const sizeSelect = createSizeSelect(document.body);
+sizeSelect.addEventListener('change', (event) => {
+  console.log(event.target.value);
+  switch (event.target.value) {
+    case '10':
+      sendNewGameEvent(event.target, 10);
+      break;
+    case '15':
+      sendNewGameEvent(event.target, 15);
+      break;
+    case '25':
+      sendNewGameEvent(event.target, 25);
+      break;
+    default:
+      break;
+  }
+});
+
 const restartButton = createRestartButton(container);
 restartButton.addEventListener('click', () => {
-  minesweeperGame.restart(SIZE, BOMBS_AMOUNT, container);
-  movesCounter.load(0);
-  bombsCounter.load('');
-  timer.stop();
-  timer.load(0);
+  sendNewGameEvent(document, +sizeSelect.value);
 });
 
 const soundButton = new SoundButton(document.body);
 soundButton.node.addEventListener('click', () => {
   soundButton.change();
+});
+
+document.addEventListener('newgame', (event) => {
+  minesweeperGame.restart(event.detail.size, BOMBS_AMOUNT, container);
+  movesCounter.load(0);
+  bombsCounter.load('');
+  timer.stop();
+  timer.load(0);
 });
 
 document.addEventListener('loadsave', () => {
@@ -100,6 +133,12 @@ window.addEventListener('beforeunload', () => {
 
 document.addEventListener('DOMContentLoaded', () => {
   highScoreTable.load(JSON.parse(localStorage.getItem('goodHighScoreSave420')));
+  const savedSize = +localStorage.getItem('goodSizeSave420');
+  if (!savedSize) {
+    sizeSelect.value = 10;
+    minesweeperGame.start(10, BOMBS_AMOUNT);
+  } else {
+    sizeSelect.value = savedSize;
+    minesweeperGame.start(savedSize, BOMBS_AMOUNT);
+  }
 });
-
-minesweeperGame.start(SIZE, BOMBS_AMOUNT);
