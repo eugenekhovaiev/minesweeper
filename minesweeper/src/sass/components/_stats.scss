@@ -1,5 +1,6 @@
 .stats {
   width: 200px;
+  display: flex;
   flex-direction: column;
   align-items: flex-start;
 
@@ -8,14 +9,14 @@
   color: blue;
 
   &__timer {
-    margin-bottom: 20px;
+    margin-bottom: 1.2rem;
   }
 
   &__moves{
-    margin-bottom: 20px;
+    margin-bottom: 1.2rem;
   }
 
   &__bombs {
-    margin-bottom: 20px;
+    margin-bottom: 1.2rem;
   }
 }

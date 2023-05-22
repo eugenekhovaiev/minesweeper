@@ -1,0 +1,76 @@
+@media (max-width: 1199px) {
+  html {
+    font-size: 11px;
+  }
+
+  .container {
+    width: 750px;
+    gap: 30px;
+  }
+
+  .field {
+    grid-template-columns: repeat(10, 30px);
+
+    .cell {
+      width: 30px;
+      height: 30px;
+    }
+
+    &_normal {
+      grid-template-columns: repeat(15, 25px);
+
+      .cell {
+        width: 25px;
+        height: 25px;
+      }
+    }
+  
+    &_hard {
+      grid-template-columns: repeat(25, 15px);
+  
+      .cell {
+        width: 15px;
+        height: 15px;
+
+        font-size: 1rem;
+        border: 0.5px solid black;
+      }
+    }
+  }
+}
+
+@media (max-width: 767px) {
+  .container {
+    width: 480px;
+    flex-direction: column-reverse;
+  }
+
+  .stats {
+    margin: 0 auto;
+    width: 92%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    & > * {
+      margin-bottom: 0;
+    }
+  }
+
+  .menu {
+    margin: 0 auto;
+    width: 92%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+
+    & > * {
+      margin-bottom: 0;
+    }
+  }
+
+  .record {
+    width: 78%;
+  }
+}
