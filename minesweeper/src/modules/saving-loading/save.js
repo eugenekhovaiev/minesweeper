@@ -1,5 +1,5 @@
 export default function save(matrix) {
-  if (!matrix) {
+  if (!matrix || document.querySelector('.message')) {
     localStorage.setItem('goodSave420', null);
   } else {
     localStorage.setItem('goodSave420', JSON.stringify(matrix));
@@ -16,7 +16,7 @@ export default function save(matrix) {
     localStorage.setItem('goodHighScoreSave420', null);
   }
 
-  localStorage.setItem('goodSoundSave420', document.querySelector('.sound-button').innerHTML);
+  localStorage.setItem('goodSoundSave420', document.querySelector('.button_sound').innerHTML);
   localStorage.setItem('goodSizeSave420', document.querySelector('.size-select').value);
   localStorage.setItem('goodBombsSave420', document.querySelector('.bombs-slider__input').value);
 }

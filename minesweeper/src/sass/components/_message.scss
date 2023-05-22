@@ -1,0 +1,13 @@
+.message {
+  margin: -1.7rem auto 0;
+  width: 80%;
+  text-align: center;
+
+  &_win {
+    color: green;
+  }
+
+  &_loss {
+    color: red;
+  }
+}

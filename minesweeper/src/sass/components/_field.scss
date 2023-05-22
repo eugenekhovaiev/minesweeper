@@ -1,14 +1,19 @@
 .field {
   display: grid;
-  grid-template-columns: repeat(10, $cell-size);
+  grid-template-columns: repeat(10, 40px);
 
   justify-content: center;
 
   &_normal {
-    grid-template-columns: repeat(15, $cell-size);
+    grid-template-columns: repeat(15, 40px);
   }
 
   &_hard {
-    grid-template-columns: repeat(25, $cell-size);
+    grid-template-columns: repeat(25, 25px);
+
+    .cell {
+      width: 25px;
+      height: 25px;
+    }
   }
 }

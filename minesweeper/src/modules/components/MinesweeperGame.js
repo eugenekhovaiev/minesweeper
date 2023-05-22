@@ -92,7 +92,7 @@ export default class MinesweeperGame {
         sendInitEvent(document);
       }
 
-      if (!button || button.classList.contains('cell_opened')) return;
+      if (!button || button.classList.contains('cell_opened') || button.disabled === true) return;
 
       sendMoveEvent(document);
 

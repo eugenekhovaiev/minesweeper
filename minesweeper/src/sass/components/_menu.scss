@@ -1,0 +1,24 @@
+.menu {
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  color: blue;
+  font-size: 1.5rem;
+  font-weight: 700;
+
+  &__size {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+  }
+
+  &__sound {
+    margin-bottom: 20px;
+  }
+
+  &__bombs {
+    margin-bottom: 20px;
+  }
+}

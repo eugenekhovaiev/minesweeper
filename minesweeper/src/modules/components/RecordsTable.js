@@ -1,10 +1,10 @@
-import { createHighScoreTable } from '../edit-HTML';
+import { createRecordsTable } from '../edit-HTML';
 
 import formatDate from '../formatDate';
 
-export default class HighScoreTable {
+export default class RecordsTable {
   constructor(where) {
-    this.node = createHighScoreTable(where);
+    this.node = createRecordsTable(where);
     this.array = [];
   }
 

@@ -1,0 +1,17 @@
+.records-table {
+  display: none;
+  color: blue;
+  font-size: 1.5rem;
+  font-weight: 700;
+
+  &_active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    // justify-content: center;
+  }
+  .record {
+    width: 500px;
+    margin-bottom: 10px;
+  }
+}

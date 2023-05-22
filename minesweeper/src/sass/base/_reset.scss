@@ -11,3 +11,12 @@
   outline: none;
   border: none;
 }
+
+body {
+  background-color: $body-bg-color;
+  padding-top: 10vh;
+}
+
+html {
+  font-size: 16px;
+}

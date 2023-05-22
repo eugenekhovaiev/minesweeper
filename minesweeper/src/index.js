@@ -1,7 +1,7 @@
 import './sass/main.scss';
 
 import {
-  createContainer,
+  createStartHTML,
   createRestartButton,
   createSizeSelect,
   createBombsSlider,
@@ -12,7 +12,7 @@ import MinesweeperGame from './modules/components/MinesweeperGame';
 import RemainingBombsCounter from './modules/components/RemainingBombsCounter';
 import MovesCounter from './modules/components/MovesCounter';
 import Timer from './modules/components/Timer';
-import HighScoreTable from './modules/components/HighScoreTable';
+import RecordsTable from './modules/components/RecordsTable';
 import SoundButton from './modules/components/SoundButton';
 
 import winFunc from './modules/end-funcs/winFunc';
@@ -31,21 +31,23 @@ const boomAudio = new Audio(boomSoundFile);
 const winAudio = new Audio(winSoundFile);
 const revealAudio = new Audio(revealSoundFile);
 
-const container = createContainer(document.body);
+createStartHTML();
+const menu = document.querySelector('.menu');
+const stats = document.querySelector('.stats');
 
-const minesweeperGame = new MinesweeperGame(container);
+const minesweeperGame = new MinesweeperGame(menu);
 
 function sendNewGameEvent(from) {
   const newGame = new CustomEvent('newgame', { bubbles: true });
   from.dispatchEvent(newGame);
 }
 
-const sizeSelect = createSizeSelect(document.body);
+const sizeSelect = createSizeSelect(document.querySelector('.menu__size'));
 sizeSelect.addEventListener('change', (event) => {
   sendNewGameEvent(event.target);
 });
 
-const bombsSlider = createBombsSlider(document.body);
+const bombsSlider = createBombsSlider(document.querySelector('.menu__bombs'));
 const bombSliderInput = bombsSlider.querySelector('.bombs-slider__input');
 const bombSliderSelected = bombsSlider.querySelector('.bombs-slider__selected');
 bombSliderInput.addEventListener('input', () => {
@@ -53,7 +55,7 @@ bombSliderInput.addEventListener('input', () => {
   sendNewGameEvent(document);
 });
 
-const bombsCounter = new RemainingBombsCounter(+bombSliderInput.value, container);
+const bombsCounter = new RemainingBombsCounter(+bombSliderInput.value, document.querySelector('.stats__bombs'));
 document.addEventListener('increasecounter', () => {
   bombsCounter.increase();
   playAudio(flagAudio);
@@ -63,7 +65,7 @@ document.addEventListener('decreasecounter', () => {
   playAudio(flagAudio);
 });
 
-const movesCounter = new MovesCounter(0, container);
+const movesCounter = new MovesCounter(0, document.querySelector('.stats__moves'));
 document.addEventListener('move', (event) => {
   if (event.target.nodeName === 'BUTTON') {
     playAudio(revealAudio);
@@ -71,14 +73,16 @@ document.addEventListener('move', (event) => {
   movesCounter.increase();
 });
 
-const timer = new Timer(container);
+const timerWrapper = document.querySelector('.timer-wrapper');
+const timer = new Timer(stats);
+timerWrapper.replaceWith(timer.node);
 
 document.addEventListener('init', () => {
   bombsCounter.load(+bombSliderInput.value);
   timer.start();
 });
 
-const highScoreTable = new HighScoreTable(document.body);
+const highScoreTable = new RecordsTable(document.body);
 document.addEventListener('win', () => {
   timer.stop();
   playAudio(winAudio);
@@ -90,22 +94,30 @@ document.addEventListener('loss', () => {
   lossFunc(minesweeperGame.matrix);
 });
 
-const restartButton = createRestartButton(container);
+const recordsButton = document.querySelector('.button_records');
+recordsButton.addEventListener('click', () => {
+  highScoreTable.node.classList.toggle('records-table_active');
+});
+
+const restartButton = createRestartButton(stats);
 restartButton.addEventListener('click', () => {
   sendNewGameEvent(document);
 });
 
-const soundButton = new SoundButton(document.body);
+const soundButton = new SoundButton(document.querySelector('.menu__sound'));
 soundButton.node.addEventListener('click', () => {
   soundButton.change();
 });
 
 document.addEventListener('newgame', () => {
-  minesweeperGame.restart(+sizeSelect.value, +bombSliderInput.value, container);
+  minesweeperGame.restart(+sizeSelect.value, +bombSliderInput.value, menu);
   movesCounter.load(0);
   bombsCounter.load(bombSliderInput.value);
   timer.stop();
   timer.load(0);
+
+  const message = document.querySelector('.message');
+  if (message) message.remove();
 });
 
 document.addEventListener('loadsave', () => {
@@ -138,4 +150,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     minesweeperGame.start(savedSize, +bombSliderInput.value);
   }
+  bombsCounter.load(+bombSliderInput.value);
 });

@@ -1,4 +1,5 @@
-.button {
+.size-select {
+  margin-left: 10px;
   padding: 7px 15px;
   display: inline-block;
   min-width: 60px;
@@ -12,18 +13,4 @@
   font-size: 1.5rem;
   font-weight: 700;
   color: $body-bg-color;
-
-  transition: 0.1s all;
-
-  &:hover {
-    transform: scale(104%);
-  }
-
-  &:active {
-    transform: translateY(2px);
-  }
-
-  &_sound {
-    margin-left: 5px;
-  }
 }

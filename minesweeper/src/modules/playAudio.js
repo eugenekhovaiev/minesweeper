@@ -1,5 +1,5 @@
 export default function playAudio(audio) {
-  if (document.querySelector('.sound-button').innerHTML === 'On') {
+  if (document.querySelector('.button_sound').innerHTML === 'On') {
     audio.currentTime = 0;
     audio.play();
   }

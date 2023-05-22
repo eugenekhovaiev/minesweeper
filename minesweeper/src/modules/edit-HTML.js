@@ -16,58 +16,68 @@ export function createField(where, size) {
   button.classList.add('cell');
 
   field.innerHTML = button.outerHTML.repeat(size * size);
-  where.insertAdjacentElement('beforeend', field);
+  where.insertAdjacentElement('afterend', field);
 
   return field;
 }
 
-export function createContainer(where) {
-  const container = document.createElement('main');
-  container.classList.add('container');
-  where.insertAdjacentElement('afterbegin', container);
-
-  return container;
+export function createStartHTML() {
+  document.body.innerHTML = `
+  <main class="container">
+    <div class="menu">
+      <div class="menu__sound">Sound is: </div>
+      <div class="menu__size">Size: </div>
+      <div class="menu__bombs">Bombs amount: </div>
+      <button class="button button_records">Records</button>
+    </div>
+    <div class="stats">
+      <div class="stats__timer">Time: <span class="timer-wrapper"></span>s</div>
+      <div class="stats__moves"> Moves: </div>
+      <div class="stats__bombs">Bombs left: </div>
+    </div>
+  </main>
+  `;
 }
 
 export function createRestartButton(where) {
   const restartButton = document.createElement('button');
-  restartButton.classList.add('restart-button');
-  restartButton.innerHTML = 'Restart';
-  where.insertAdjacentElement('afterbegin', restartButton);
+  restartButton.classList.add('button', 'button_new-game');
+  restartButton.innerHTML = 'New Game';
+  where.insertAdjacentElement('beforeend', restartButton);
 
   return restartButton;
 }
 
-export function createBombsCounter(where) {
-  const bombCounter = document.createElement('button');
+export function createBombsCounter(where, amount) {
+  const bombCounter = document.createElement('span');
   bombCounter.classList.add('bombs-counter');
-  // bombCounter.innerHTML = bombsAmount;
-  where.insertAdjacentElement('afterbegin', bombCounter);
+  bombCounter.innerHTML = amount;
+  where.insertAdjacentElement('beforeend', bombCounter);
 
   return bombCounter;
 }
 
 export function createMovesCounter(where) {
-  const movesCounter = document.createElement('button');
+  const movesCounter = document.createElement('span');
   movesCounter.classList.add('moves-counter');
   movesCounter.innerHTML = 0;
-  where.insertAdjacentElement('afterbegin', movesCounter);
+  where.insertAdjacentElement('beforeend', movesCounter);
 
   return movesCounter;
 }
 
 export function createTimer(where) {
-  const timer = document.createElement('button');
+  const timer = document.createElement('span');
   timer.classList.add('timer');
   timer.innerHTML = 0;
-  where.insertAdjacentElement('afterbegin', timer);
+  where.insertAdjacentElement('beforeend', timer);
 
   return timer;
 }
 
-export function createHighScoreTable(where) {
+export function createRecordsTable(where) {
   const highScoreTable = document.createElement('ol');
-  highScoreTable.classList.add('high-score-table');
+  highScoreTable.classList.add('records-table');
   where.insertAdjacentElement('beforeend', highScoreTable);
 
   return highScoreTable;
@@ -75,9 +85,9 @@ export function createHighScoreTable(where) {
 
 export function createSoundButton(where) {
   const soundButton = document.createElement('button');
-  soundButton.classList.add('sound-button');
+  soundButton.classList.add('button', 'button_sound');
   soundButton.innerHTML = 'On';
-  where.insertAdjacentElement('afterbegin', soundButton);
+  where.insertAdjacentElement('beforeend', soundButton);
 
   return soundButton;
 }
@@ -90,7 +100,7 @@ export function createSizeSelect(where) {
     <option value="15">15x15</option>
     <option value="25">25x25</option>
   `;
-  where.insertAdjacentElement('afterbegin', sizeSelect);
+  where.insertAdjacentElement('beforeend', sizeSelect);
 
   return sizeSelect;
 }
@@ -102,20 +112,7 @@ export function createBombsSlider(where) {
     <input class="bombs-slider__input" type="range" min="1" max="99" value="1" step="1">
     <div class="bombs-slider__selected">1</div>
   `;
-  // const slider = document.createElement('input');
-  // slider.classList.add('bombs-slider__input');
-  // slider.setAttribute('type', 'range');
-  // slider.setAttribute('min', '1');
-  // slider.setAttribute('max', '99');
-  // slider.setAttribute('value', '1');
-  // slider.setAttribute('step', '1');
-  // bombsSlider.insertAdjacentElement('beforeend', slider);
 
-  // const selected = document.createElement('div');
-  // selected.classList.add('bombs-slider__selected');
-  // selected.innerHTML = slider.value;
-  // bombsSlider.insertAdjacentElement('beforeend', selected);
-
-  where.insertAdjacentElement('afterbegin', bombsSlider);
+  where.insertAdjacentElement('beforeend', bombsSlider);
   return bombsSlider;
 }

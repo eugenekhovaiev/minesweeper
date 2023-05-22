@@ -3,7 +3,7 @@ import { createBombsCounter } from '../edit-HTML';
 export default class RemainingBombsCounter {
   constructor(amount, where) {
     this.amount = amount;
-    this.node = createBombsCounter(where);
+    this.node = createBombsCounter(where, amount);
   }
 
   increase() {

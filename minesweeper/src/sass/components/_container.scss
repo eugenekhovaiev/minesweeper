@@ -1,5 +1,9 @@
 .container {
-  width: 80vw;
+  width: 1200px;
   margin: 0 auto;
-  padding: 10vh 10vw;
+  padding: 10vh 0;
+
+  display: flex;
+  justify-content: center;
+  gap: 100px;
 }

@@ -1,5 +1,5 @@
-@import 'base/reset';
 @import 'abstracts/variables';
+@import 'base/reset';
 
 @import 'components/container';
 @import 'components/field';
@@ -8,4 +8,10 @@
 @import 'components/bombs-counter';
 @import 'components/moves-counter';
 @import 'components/timer'; 
-@import 'components/high-score-table'; 
+@import 'components/high-score-table';
+@import 'components/menu';
+@import 'components/stats';
+@import 'components/size-select';
+@import 'components/bomb-slider';
+@import 'components/records-table';
+@import 'components/message';

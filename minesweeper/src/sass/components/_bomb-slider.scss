@@ -1,0 +1,10 @@
+.bombs-slider {
+  display: flex;
+  justify-content: space-between;
+
+  &__input {
+    width: 80%;
+    
+    cursor: pointer;
+  }
+}
