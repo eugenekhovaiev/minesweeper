@@ -1,0 +1,29 @@
+.dark {
+  background-color: #1c1c1c;
+
+  .button {
+    background-color: #df1414;
+  }
+
+  .size-select {
+    background-color: #df1414;
+  }
+
+  .menu,
+  .stats,
+  .record {
+    color: #df1414;
+  }
+
+  .cell {
+    background-color: #7a0909;
+
+    &_opened {
+      background-color: #c1c1c1;
+    }
+  
+    &_exploded {
+      background-color: red;
+    }
+  }
+}

@@ -25,6 +25,7 @@ export function createStartHTML() {
   document.body.innerHTML = `
   <main class="container">
     <div class="menu">
+      <div class="menu__theme">Theme is: </div>
       <div class="menu__sound">Sound is: </div>
       <div class="menu__size">Size: </div>
       <div class="menu__bombs">Bombs amount: </div>
@@ -90,6 +91,15 @@ export function createSoundButton(where) {
   where.insertAdjacentElement('beforeend', soundButton);
 
   return soundButton;
+}
+
+export function createThemeButton(where) {
+  const themeButton = document.createElement('button');
+  themeButton.classList.add('button', 'button_theme');
+  themeButton.innerHTML = 'Light';
+  where.insertAdjacentElement('beforeend', themeButton);
+
+  return themeButton;
 }
 
 export function createSizeSelect(where) {

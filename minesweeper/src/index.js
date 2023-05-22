@@ -14,6 +14,7 @@ import MovesCounter from './modules/components/MovesCounter';
 import Timer from './modules/components/Timer';
 import RecordsTable from './modules/components/RecordsTable';
 import SoundButton from './modules/components/SoundButton';
+import ThemeButton from './modules/components/ThemeButton';
 
 import winFunc from './modules/end-funcs/winFunc';
 import lossFunc from './modules/end-funcs/lossFunc';
@@ -109,6 +110,11 @@ soundButton.node.addEventListener('click', () => {
   soundButton.change();
 });
 
+const themeButton = new ThemeButton(document.querySelector('.menu__theme'));
+themeButton.node.addEventListener('click', () => {
+  themeButton.change();
+});
+
 document.addEventListener('newgame', () => {
   minesweeperGame.restart(+sizeSelect.value, +bombSliderInput.value, menu);
   movesCounter.load(0);
@@ -151,4 +157,8 @@ document.addEventListener('DOMContentLoaded', () => {
     minesweeperGame.start(savedSize, +bombSliderInput.value);
   }
   bombsCounter.load(+bombSliderInput.value);
+
+  if (localStorage.getItem('goodThemeSave420') === 'Dark') {
+    themeButton.change();
+  }
 });

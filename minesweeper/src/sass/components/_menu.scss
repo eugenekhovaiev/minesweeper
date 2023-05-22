@@ -1,5 +1,5 @@
 .menu {
-  width: 200px;
+  width: 225px;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -8,14 +8,18 @@
   font-size: 1.5rem;
   font-weight: 700;
 
+  &__theme {
+    margin-bottom: 1.2rem;
+  }
+
+  &__sound {
+    margin-bottom: 4rem;
+  }
+
   &__size {
     margin-bottom: 1.2rem;
     display: flex;
     align-items: center;
-  }
-
-  &__sound {
-    margin-bottom: 1.2rem;
   }
 
   &__bombs {
