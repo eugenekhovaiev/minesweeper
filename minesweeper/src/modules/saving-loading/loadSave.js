@@ -30,4 +30,6 @@ export default function loadSave() {
     sendLoadEvent(document);
     return matrixCopy;
   }
+
+  return null;
 }
